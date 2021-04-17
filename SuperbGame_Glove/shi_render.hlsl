@@ -57,7 +57,7 @@ static const int miscStrings[26][16] = {
     {'N', 'a', 'm', 'e', ' ', 'S', 'c', 'o', 'r', 'e', ' ', 'T', 'i', 'm', 'e', '\0'}, // "Name Score Time"
     {' ', ' ', '#', 'R', 'm', 's','\0', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '\0'}, // "  #Rms"
     {'0', '0','\0', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '\0'}, // "00"
-    {'R', 'O', 'O', 'M', 'S', ' ', 'C', 'L', 'E', 'A', 'R', 'E', 'D', ':','\0', '\0'}, // "ROOMS CLEARED: "
+    {'R', 'O', 'O', 'M', 'S', ' ', 'C', 'L', 'E', 'A', 'R', 'E', 'D', ':', ' ', '\0'}, // "ROOMS CLEARED: "
     {' ', ' ', ' ', 'Y', 'O', 'U', ' ', 'A', 'R', 'E', ' ', 'G', 'R', 'E', 'A', '\0'}, // "   YOU ARE GREA"
     {'T', '!', '!','\0', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '\0'}, // "T!!"
     {'Y', 'o', 'u', ' ', 's', 'e', 't', ' ', 'a', ' ', 'h', 'i', 'g', 'h','\0', '\0'}, // "You set a high "
@@ -67,7 +67,7 @@ static const int miscStrings[26][16] = {
     {'(', 'C', ')', ' ', '2', '0', '1', '6', ' ', 'f', 'u', 'o', 'p', 'y','\0', '\0'}  // "(c) 2016 fuopy"
 };
 
-static const int menuStrings[19][22] = {
+static const int menuStrings[21][22] = {
     {'[', ' ', ' ', ' ', ' ', ' ', 'M', 'a', 'i', 'n', ' ', 'M', 'e', 'n', 'u', ' ', ' ', ' ', ' ', ' ', ']', '\0'}, // "[     Main Menu     ]"
     {'C', 'o', 'n', 't', 'i', 'n', 'u', 'e', ':','\0', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '\0'}, // "Continue:"
     {'N', 'e', 'w', ' ', 'G', 'a', 'm', 'e','\0', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '\0'}, // "New Game"
@@ -86,7 +86,9 @@ static const int menuStrings[19][22] = {
     {' ', '1', ' ', '2', ' ', '3', ' ', '4', ' ', '5', ' ', '6', ' ', '7', ' ', '8', ' ', '9', ' ', '0', '\0','\0'}, // " 1 2 3 4 5 6 7 8 9 0"
     {' ', 'Q', ' ', 'W', ' ', 'E', ' ', 'R', ' ', 'T', ' ', 'Y', ' ', 'U', ' ', 'I', ' ', 'O', ' ', 'P', '\0','\0'}, // " Q W E R T Y U I O P"
     {' ', 'A', ' ', 'S', ' ', 'D', ' ', 'F', ' ', 'G', ' ', 'H', ' ', 'J', ' ', 'K', ' ', 'L', ' ', ' ', '\0','\0'}, // " A S D F G H J K L  "
-    {' ', 'Z', ' ', 'X', ' ', 'C', ' ', 'V', ' ', 'B', ' ', 'N', ' ', 'M', ' ', ' ', ' ', ' ', ' ', ' ', '\0','\0'}  // " Z X C V B N M      "
+    {' ', 'Z', ' ', 'X', ' ', 'C', ' ', 'V', ' ', 'B', ' ', 'N', ' ', 'M', ' ', ' ', ' ', ' ', ' ', ' ', '\0','\0'}, // " Z X C V B N M      "
+	{'-', ' ', 'R', 'e', 'c', 'o', 'r', 'd', 's', ' ', '-','\0', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '\0'}, // "- Records -"
+	{'N', 'a', 'm', 'e', ' ', 'S', 'c', 'o', 'r', 'e', ' ', 'T', 'i', 'm', 'e', ' ', ' ', '#', 'R', 'm', 's', '\0'}  // "Name Score Time  #Rms"
 };
 
 // HELPER ROUTINES //////////////////////////////////////////////////////////
@@ -581,9 +583,54 @@ float4 mainMenuDraw(int x, int y, texture2D sprites, texture2D font)
 float4 hiscoreViewDraw(int x, int y, texture2D sprites, texture2D font)
 {
     float4 finalColor = okayFloat4;
-    int stringX = 0;
+    int stringX = 6*5;
     int stringY = 0;
+    PIXEL(finalColor, draw_menuString(x, y, stringX, stringY, menuStrings[19], font)); // "- Records -"
 
-    PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[1], font));
+	stringX = 0;
+	stringY = 16;
+	PIXEL(finalColor, draw_menuString(x, y, stringX, stringY, menuStrings[20], font)); // "Name Score Time  #Rms"
+
+	for (int i = 0; i < 3; ++i)
+	{
+		// Draw name.
+		stringX = 0;
+		stringY = 8 * (3 + i);
+		PIXEL(finalColor, draw_character(x, y, stringX, stringY, records.names[i][0], font)); // prompt.inputBuffer[0]
+		stringX += 6;
+		PIXEL(finalColor, draw_character(x, y, stringX, stringY, records.names[i][1], font)); // prompt.inputBuffer[1]
+		stringX += 6;
+		PIXEL(finalColor, draw_character(x, y, stringX, stringY, records.names[i][2], font)); // prompt.inputBuffer[2]
+		stringX += 6;
+		PIXEL(finalColor, draw_character(x, y, stringX, stringY, records.names[i][3], font)); // prompt.inputBuffer[3]
+		stringX += 6;
+
+		// Draw score.
+		stringX = 6 * 5;
+		stringY = 8 * (3 + i);
+		PIXEL(finalColor, draw_integer(x, y, stringX, stringY, records.scores[i] * 100, font));
+		//PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[17], font)); // "00"
+
+		// Draw Time.
+		stringX = 6 * 11;
+		stringY = 8 * (3 + i);
+		PIXEL(finalColor, draw_time(x, y, stringX, stringY, records.times[i], font));
+
+		// Draw Rooms.
+		stringX += 6;
+		PIXEL(finalColor, draw_integer(x, y, stringX, stringY, records.rooms[i], font));
+	}
+
+	// Draw Rooms Cleared message or Happy Message.
+	if (GameMode == GAME_MODE_GLOVE)
+	{
+		stringX = 0;
+		stringY = 8 * 7;
+		PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[24], font)); // "ROOMS CLEARED: "
+		stringX += 6;
+		PIXEL(finalColor, draw_integer(x, y, stringX, stringY, 0, font));
+		PIXEL(finalColor, draw_character(x, y, stringX, stringY, '%', font));
+	}
+
     return finalColor;
 }

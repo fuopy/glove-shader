@@ -31,7 +31,7 @@
                 // Do a different thing depending on the game state.
                 updateInput(_PlayerOneJoystick);
 
-				gameState = GAMESTATE_HISCORE_INPUT;
+				gameState = GAMESTATE_HISCORE_VIEW;
 				prompt.active = true;
 				//prompt.cursor = 0;
 				prompt.tabCount = 10;

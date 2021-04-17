@@ -330,6 +330,14 @@ struct Prompt {
     int inputBufferLength;					  // SINGLE_PROMPT_INPUTBUFFERLENGTH
     int inputBuffer[MAX_PROMPT_INPUT_BUFFER]; // ROW_PROMPT_INPUTBUFFER
 };
+#define MAX_HIGH_SCORES 3
+struct Records {
+	int times[MAX_HIGH_SCORES];
+	int scores[MAX_HIGH_SCORES];
+	int rooms[MAX_HIGH_SCORES];
+	int names[MAX_HIGH_SCORES][MAX_PROMPT_INPUT_BUFFER];
+	int roomsDiscoveredMask;
+};
 
 // GLOBALS //////////////////////////////////////////////////////////////////
 static Bullet bullets[3];
@@ -342,6 +350,7 @@ static Spawner spawners[4];
 static Exit exits[4];
 
 static Prompt prompt;
+static Records records;
 
 static int spawnx; //short               // SINGLE_SPAWNX
 static int spawny; //short               // SINGLE_SPAWNY
