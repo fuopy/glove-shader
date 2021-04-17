@@ -107,26 +107,25 @@ float4 draw_character(int x, int y, int sx, int sy, int id, texture2D tex)
 #define MAX_STRING_SIZE 30
 float4 draw_string(int x, int y, inout int sx, inout int sy, const int str[16], texture2D tex)
 {
+	float4 finalColor = okayFloat4;
 	int index = 0;
 	int gotChar = 0;
-
-	float4 finalColor;
 
 	gotChar = str[index];
 	while (index < MAX_STRING_SIZE && gotChar != '\0')
 	{
-		finalColor = draw_character(x, y, sx, sy, gotChar, tex);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_character(x, y, sx, sy, gotChar, tex));
 		++index;
 		sx += 6;
 		gotChar = str[index];
 	}
-	return okayFloat4;
+	return finalColor;
 }
 float4 draw_integer(int x, int y, inout int destx, inout int desty, int val, texture2D tex)
 {
+	float4 finalColor = okayFloat4;
+
 	// Convert the integer to a base-10 string.
-	float4 finalColor;
 	int i = val;
 	int remainder;
 	int finalNumberIter;
@@ -137,10 +136,7 @@ float4 draw_integer(int x, int y, inout int destx, inout int desty, int val, tex
 	if (val < 0)
 	{
 		i = -i;
-		// Too lazy to do negs for now.
-		//return okayFloat4;
-		finalColor = draw_character(x, y, destx, desty, '-', tex);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_character(x, y, destx, desty, '-', tex))
 		destx += 6;
 	}
 	for (iterCount = 0; iterCount < 10; ++iterCount)
@@ -152,23 +148,20 @@ float4 draw_integer(int x, int y, inout int destx, inout int desty, int val, tex
 	}
 	for (finalNumberIter = 0; finalNumberIter <= iterCount; ++finalNumberIter)
 	{
-		finalColor = draw_character(x, y, destx, desty, digits[iterCount-finalNumberIter] + '0', tex);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_character(x, y, destx, desty, digits[iterCount - finalNumberIter] + '0', tex));
 		destx += 6;
 	}
-	return okayFloat4;
+	return finalColor;
 }
 
 float4 draw_sprite(int x, int y, int sx, int sy, uint id, texture2D tex)
 {
 	if (hitbox(x, y, 0, 0, sx, sy, 8, 8))
 	{
-		//if (true)
-			//return float4( 1, 1, 1, 1 );
 		int dx = x - sx;
 		int dy = y - sy;
-		int spx = 8 * (id % 16); // VALID
-		int spy = 8 * (id / 16); // VALID
+		int spx = 8 * (id % 16);
+		int spy = 8 * (id / 16);
 		int2 spritesheetPixel = int2(dx + spx, dy + spy);
 		return tex[spritesheetPixel];
 	}
@@ -190,114 +183,114 @@ float4 draw_sprite_rect(int x, int y, int sx, int sy, int sw, int sh, uint id, t
 
 float4 draw_time(int x, int y, inout int destx, inout int desty, int time, texture2D tex)
 {
-	float4 finalColor;
+	float4 finalColor = okayFloat4;
 
 	int mins = time / 60;
 	int secs = time % 60;
 
 	if (mins < 10)
 	{
-		finalColor = draw_character(x, y, destx, desty, '0', tex);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_character(x, y, destx, desty, '0', tex));
 		destx += FONT_WIDTH;
 	}
 	
-	finalColor = draw_integer(x, y, destx, desty, mins, tex);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_integer(x, y, destx, desty, mins, tex));
 
-	finalColor = draw_character(x, y, destx, desty, ':', tex);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_character(x, y, destx, desty, ':', tex));
 	destx += FONT_WIDTH;
 
 	if (secs < 10)
 	{
-		finalColor = draw_character(x, y, destx, desty, '0', tex);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_character(x, y, destx, desty, '0', tex));
 		destx += FONT_WIDTH;
 	}
 
-	finalColor = draw_integer(x, y, destx, desty, secs, tex);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_integer(x, y, destx, desty, secs, tex));
 
-	return okayFloat4;
+	return finalColor;
 }
 
 // TYPE ROUTINES ////////////////////////////////////////////////////////////
 // BADGUY ///////////////////////////////////////////////////////////////////
 float4 draw_badguy(int x, int y, inout BadGuy obj, texture2D tex)
 {
+	float4 finalColor = okayFloat4;
 	if (obj.active)
 	{
 		int drawSpr = 4;
 		//return draw_sprite(x, y, obj.x, obj.y, drawSpr, tex);
 		// NEW: Scroll
-		return draw_sprite(x, y, (int)obj.x + (int)scrollx, obj.y + scrolly, drawSpr, tex);
+		PIXEL(finalColor, draw_sprite(x, y, (int)obj.x + (int)scrollx, obj.y + scrolly, drawSpr, tex));
 	}
-	return okayFloat4;
+	return finalColor;
 }
 // BULLET ///////////////////////////////////////////////////////////////////
 float4 draw_bullet(int x, int y, inout Bullet obj, texture2D tex)
 {
+	float4 finalColor = okayFloat4;
 	if (obj.active)
 	{
 		int drawSpr = 14;
-		return draw_sprite(x, y, obj.x + scrollx, obj.y + scrolly, drawSpr, tex);
+		PIXEL(finalColor, draw_sprite(x, y, obj.x + scrollx, obj.y + scrolly, drawSpr, tex));
 	}
-	return okayFloat4;
+	return finalColor;
 }
 // EXIT /////////////////////////////////////////////////////////////////////
 float4 draw_exit(int x, int y, inout Exit obj, texture2D tex)
 {
+	float4 finalColor = okayFloat4;
 	if (obj.active)
 	{
 		int drawSpr = 13;
-		return draw_sprite(x, y, obj.x * 8 + scrollx, obj.y * 8 + scrolly, drawSpr, tex);
+		PIXEL(finalColor, draw_sprite(x, y, obj.x * 8 + scrollx, obj.y * 8 + scrolly, drawSpr, tex));
 	}
-	return okayFloat4;
+	return finalColor;
 }
 // EXPLORER /////////////////////////////////////////////////////////////////
 float4 draw_explorer(int x, int y, inout Explorer obj, texture2D tex, texture2D font)
 {
+	float4 finalColor = okayFloat4;
 	if (obj.active)
 	{
 		// Draw player sprite.
 		int drawSpr = (obj.direction * 2) + (obj.frame % 2) + 64;
-		float4 finalColor = draw_sprite(x, y, obj.x + scrollx, obj.y + scrolly, drawSpr, tex);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_sprite(x, y, obj.x + scrollx, obj.y + scrolly, drawSpr, tex));
 
 		// Draw player health.
 		if (rollingScore <= -30) {
 			int drawx = 0;
 			int drawy = scrh-8;
-			finalColor = draw_integer(x, y, drawx, drawy, obj.health, font);
-			if (finalColor[0] > .5) return finalColor;
+			PIXEL(finalColor, draw_integer(x, y, drawx, drawy, obj.health, font));
 		}
 	}
-	return okayFloat4;
+	return finalColor;
 }
 // KEY //////////////////////////////////////////////////////////////////////
 float4 draw_key(int x, int y, inout Key obj, texture2D tex)
 {
+	float4 finalColor = okayFloat4;
 	if (obj.active)
 	{
 		int drawSpr = 5;
-		return draw_sprite(x, y, obj.x * 8 + scrollx, obj.y * 8 + scrolly, drawSpr, tex);
+		PIXEL(finalColor, draw_sprite(x, y, obj.x * 8 + scrollx, obj.y * 8 + scrolly, drawSpr, tex));
 	}
-	return okayFloat4;
+	return finalColor;
 }
 // SPAWNER //////////////////////////////////////////////////////////////////
 float4 draw_spawner(int x, int y, inout Spawner obj, texture2D tex)
 {
+	float4 finalColor = okayFloat4;
 	if (obj.active)
 	{
 		int drawSpr = 10;
-		return draw_sprite(x, y, obj.x*8 + scrollx, obj.y*8 + scrolly, drawSpr, tex);
+		PIXEL(finalColor, draw_sprite(x, y, obj.x*8 + scrollx, obj.y*8 + scrolly, drawSpr, tex));
 	}
-	return okayFloat4;
+	return finalColor;
 }
 // TREASURE /////////////////////////////////////////////////////////////////
 float4 draw_treasure(int x, int y, inout Treasure obj, texture2D tex)
 {
+	float4 finalColor = okayFloat4;
 	if (obj.active)
 	{
 		// None: 0
@@ -306,19 +299,20 @@ float4 draw_treasure(int x, int y, inout Treasure obj, texture2D tex)
 		// Cup: 3
 		// Lemon: 4
 		int drawSpr = 5;
-		return draw_sprite(x, y, obj.x * 8 + scrollx, obj.y * 8 + scrolly, drawSpr + obj.type, tex);
+		PIXEL(finalColor, draw_sprite(x, y, obj.x * 8 + scrollx, obj.y * 8 + scrolly, drawSpr + obj.type, tex));
 	}
-	return okayFloat4;
+	return finalColor;
 }
 // WALL /////////////////////////////////////////////////////////////////////
 float4 draw_wall(int x, int y, inout Wall obj, texture2D tex)
 {
+	float4 finalColor = okayFloat4;
 	if (obj.active)
 	{
 		int drawSpr = 11;
-		return draw_sprite_rect(x, y, obj.x * 8 + scrollx, obj.y * 8 + scrolly	, obj.w, obj.h, drawSpr + obj.style, tex);
+		PIXEL(finalColor, draw_sprite_rect(x, y, obj.x * 8 + scrollx, obj.y * 8 + scrolly, obj.w, obj.h, drawSpr + obj.style, tex));
 	}
-	return okayFloat4;
+	return finalColor;
 }
 
 // GAMESTATE ROUTINES ///////////////////////////////////////////////////////
@@ -326,41 +320,38 @@ void displayTitle();
 
 float4 titleDraw(int x, int y, texture2D sprites, texture2D font, texture2D titleImage)
 {
-	float4 finalColor = draw_background(x, y, titleImage);
-	if (finalColor[0] > .5) return finalColor;
+	float4 finalColor = okayFloat4;
+	PIXEL(finalColor, draw_background(x, y, titleImage));
 
 	// " Glove"
 	//int stringX = 32;
 	//int stringY = 32;
-	//float4 finalColor = draw_string(x, y, stringX, stringY, miscStrings[11], font);
-	//if (finalColor[0] > .5) return finalColor;
+	//PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[11], font));
 
 	// "(c) 2016"
 	int stringX = 16;
 	int stringY = scrh-8;
-	finalColor = draw_string(x, y, stringX, stringY, miscStrings[25], font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[25], font));
 
 	return finalColor;
-	//finalColor = draw_integer(x, y, 0, 0, exits[0].active ? 1 : 2, font);
-	//if (finalColor[0] > .5) return finalColor;
+	//PIXEL(draw_integer(x, y, 0, 0, exits[0].active ? 1 : 2, font));
 }
 
 float4 levelNameDraw(int x, int y, texture2D sprites, texture2D font)
 {
+	float4 finalColor = okayFloat4;
 	int stringX = 0;
 	int stringY = scrh-8;
 
 	// "Dynamic Level Name"
-	float4 finalColor = draw_string(x, y, stringX, stringY, levelNames[currentLevel], font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_string(x, y, stringX, stringY, levelNames[currentLevel], font));
 
 	return finalColor;
 }
 
 float4 gameDraw(int x, int y, texture2D sprites, texture2D font)
 {
-	float4 finalColor = { 0, 0, 1, 0 };
+	float4 finalColor = okayFloat4;
 	
 	int iter;
 	int drawSpr = 11;
@@ -372,169 +363,151 @@ float4 gameDraw(int x, int y, texture2D sprites, texture2D font)
 	}
 
 	// Draw the player
-	finalColor = draw_explorer(x, y, p1, sprites, font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_explorer(x, y, p1, sprites, font));
 
 	// Draw all walls
 	for (iter = 0; iter < numWalls; ++iter)
 	{
-		finalColor = draw_wall(x, y, walls[iter], sprites);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_wall(x, y, walls[iter], sprites));
 	}
 
 	// Draw level border
-	finalColor = draw_sprite_rect(x, y, scrollx - 8, scrolly - 8, MAP_WIDTH + 2, 1, drawSpr, sprites);
-	if (finalColor[0] > .5) return finalColor;
-	finalColor = draw_sprite_rect(x, y, scrollx - 8, gameh + scrolly, MAP_WIDTH + 2, 1, drawSpr, sprites);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_sprite_rect(x, y, scrollx - 8, scrolly - 8, MAP_WIDTH + 2, 1, drawSpr, sprites));
+	PIXEL(finalColor, draw_sprite_rect(x, y, scrollx - 8, gameh + scrolly, MAP_WIDTH + 2, 1, drawSpr, sprites));
 	
-	finalColor = draw_sprite_rect(x, y, scrollx - 8, scrolly, 1, MAP_HEIGHT, drawSpr, sprites);
-	if (finalColor[0] > .5) return finalColor;
-	finalColor = draw_sprite_rect(x, y, gamew + scrollx, scrolly, 1, MAP_HEIGHT, drawSpr, sprites);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_sprite_rect(x, y, scrollx - 8, scrolly, 1, MAP_HEIGHT, drawSpr, sprites));
+	PIXEL(finalColor, draw_sprite_rect(x, y, gamew + scrollx, scrolly, 1, MAP_HEIGHT, drawSpr, sprites));
 
 	// Draw game objects
 	// Draw Spawners.
 	for (iter = 0; iter < numSpawners; ++iter)
 	{
-		finalColor = draw_spawner(x, y, spawners[iter], sprites);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_spawner(x, y, spawners[iter], sprites));
 	}
 	// Draw Treasure.
 	for (iter = 0; iter < numTreasures; ++iter)
 	{
-		finalColor = draw_treasure(x, y, treasures[iter], sprites);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_treasure(x, y, treasures[iter], sprites));
 	}
 
 	// Draw Keys.
 	for (iter = 0; iter < numKeys; ++iter)
 	{
-		finalColor = draw_key(x, y, keys[iter], sprites);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_key(x, y, keys[iter], sprites));
 	}
 
 	// Draw Exits.
 	for (iter = 0; iter < numExits; ++iter)
 	{
-		finalColor = draw_exit(x, y, exits[iter], sprites);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_exit(x, y, exits[iter], sprites));
 	}
 
 	// Draw BadGuys.
 	for (iter = 0; iter < numBadguys; ++iter)
 	{
-		finalColor = draw_badguy(x, y, badguys[iter], sprites);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_badguy(x, y, badguys[iter], sprites));
 	}
 
 	// Draw Bullets.
 	for (iter = 0; iter < numBullets; ++iter)
 	{
-		finalColor = draw_bullet(x, y, bullets[iter], sprites);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_bullet(x, y, bullets[iter], sprites));
 	}
-
 
 	// Draw score
 	if (rollingScore > -30) {
 		int xPos = 0;
 		int yPos = scrh-8;
-		finalColor = draw_integer(x, y, xPos, yPos, score, font);
-		if (finalColor[0] > .5) return finalColor;
-		finalColor = draw_string(x, y, xPos, yPos, miscStrings[0], font);
-		if (finalColor[0] > .5) return finalColor;
+		PIXEL(finalColor, draw_integer(x, y, xPos, yPos, score, font));
+		PIXEL(finalColor, draw_string(x, y, xPos, yPos, miscStrings[0], font));
 	}
 	return finalColor;
 }
 
 float4 gameOverDraw(int x, int y, texture2D sprites, texture2D font)
 {
+	float4 finalColor = okayFloat4;
+
 	int stringX = 5 * 8 - 4;
 	int stringY = 8 * 1;
 
 	// "Game Over"
-	float4 finalColor = draw_string(x, y, stringX, stringY, miscStrings[7], font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[7], font));
 	return finalColor;
 }
 float4 gameCompleteDraw(int x, int y, texture2D sprites, texture2D font)
 {
+	float4 finalColor = okayFloat4;
 	int stringX = 3 * 6;
 	int stringY = 8 * 1;
 
 	// ""Game Complete!"
-	float4 finalColor = draw_string(x, y, stringX, stringY, miscStrings[6], font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[6], font));
 	return finalColor;
 }
 float4 gameEndDraw(int x, int y, texture2D sprites, texture2D font)
 {
+	float4 finalColor = okayFloat4;
 	int stringX = 6;
 	int stringY = 8 * 3;
 
 	// "You cleared "
-	float4 finalColor = draw_string(x, y, stringX, stringY, miscStrings[1], font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[1], font));
 
 	// "Dynamic Number: Room Count"
 	stringX += 6;
-	finalColor = draw_integer(x, y, stringX, stringY, levelsCompleted, font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_integer(x, y, stringX, stringY, levelsCompleted, font));
 
 	// " rooms"
-	finalColor = draw_string(x, y, stringX, stringY, miscStrings[2], font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[2], font));
 
 	stringX = 6 * 6;
 	stringY = 8 * 4;
 	// "In "
-	finalColor = draw_string(x, y, stringX, stringY, miscStrings[3], font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[3], font));
 
 	// "XX:XX"
-	finalColor = draw_time(x, y, stringX, stringY, gameTime, font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_time(x, y, stringX, stringY, gameTime, font));
 
 	stringX = 2 * 8;
 	stringY = 8 * 5;
 	// "With a score of"
-	finalColor = draw_string(x, y, stringX, stringY, miscStrings[4], font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[4], font));
 
 	// Dynamic number: points.
 	stringX = 6 * 5;
 	stringY = 8 * 6;
-	finalColor = draw_integer(x, y, stringX, stringY, score, font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_integer(x, y, stringX, stringY, score, font));
 
 	// "00 points"
-	finalColor = draw_string(x, y, stringX, stringY, miscStrings[5], font);
-	if (finalColor[0] > .5) return finalColor;
+	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[5], font));
 
 	return finalColor;
 }
 float4 hiscoreInputDraw(int x, int y, texture2D sprites, texture2D font)
 {
+	float4 finalColor = okayFloat4;
 	int stringX = 0;
 	int stringY = 0;
-	float4 finalColor = draw_string(x, y, stringX, stringY, miscStrings[1], font);
-	if (finalColor[0] > .5) return finalColor;
+
+	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[1], font));
 	return finalColor;
 }
 float4 mainMenuDraw(int x, int y, texture2D sprites, texture2D font)
 {
+	float4 finalColor = okayFloat4;
 	int stringX = 0;
 	int stringY = 0;
-	float4 finalColor = draw_string(x, y, stringX, stringY, miscStrings[1], font);
-	if (finalColor[0] > .5) return finalColor;
+
+	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[1], font));
 	return finalColor;
 }
 float4 hiscoreViewDraw(int x, int y, texture2D sprites, texture2D font)
 {
+	float4 finalColor = okayFloat4;
 	int stringX = 0;
 	int stringY = 0;
-	float4 finalColor = draw_string(x, y, stringX, stringY, miscStrings[1], font);
-	if (finalColor[0] > .5) return finalColor;
+
+	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[1], font));
 	return finalColor;
 }

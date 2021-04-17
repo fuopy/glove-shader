@@ -48,47 +48,6 @@
 				float4 blackColor = { 0, 0, 0, 0 };
 				float4 blueColor = { 0, 0, 255, 0 };
 
-				//int iter;
-				
-				// Setup: Load values.
-				//p1.x = 0;
-				//p1.y = 0;
-				//p1.active = 1;
-				//p1.direction = 0;
-				//p1.frame = 0;
-
-				// Cleanup: Store values.
-
-				// Draw Background.
-				//finalColor = draw_background(x, y, _BackgroundImage);
-				//if (finalColor[0] > .5) return finalColor;
-				//scrollx = -31;
-
-
-				// Draw Font.
-				//finalColor = draw_string(x, y, 0, 16, levelNames[0], _Font);
-				//if (finalColor[0] > .5) return finalColor;
-
-				// Draw some 69's.
-				//finalColor = draw_integer(x, y, 0, 32, scrollx, _Font);
-				//if (finalColor[0] > .5) return finalColor;
-
-				//finalColor = draw_integer(x, y, 0, 0, exits[0].active ? 1 : 2, _Font);
-				//if (finalColor[0] > .5) return finalColor;
-				//finalColor = draw_integer(x, y, 0, 8, exits[1].active ? 1 : 2, _Font);
-				//if (finalColor[0] > .5) return finalColor;
-				//finalColor = draw_integer(x, y, 0, 16, exits[2].active ? 1 : 2, _Font);
-				//if (finalColor[0] > .5) return finalColor;
-				//finalColor = draw_integer(x, y, 0, 24, exits[3].active ? 1 : 2, _Font);
-				//if (finalColor[0] > .5) return finalColor;
-				
-				//gameState = GAMESTATE_HISCORE_INPUT;
-
-				//finalColor = draw_string(x, y, 0, 0, levelNames[0], _Font);
-				//finalColor = draw_character(x, y, 0, 0, 'a', _Font);
-				//if (true)
-					//return finalColor;
-
 				// Draw the debugging number on top of everything.
 				if (_TestNumber > 0)
 				{
@@ -125,42 +84,32 @@
 				switch (gameState)
 				{
 				case GAMESTATE_GAME_TITLE:
-					finalColor = titleDraw(x, y, _GameSprites, _Font, _TitleImage);
-					if (finalColor[0] > .5) return finalColor;
+					PIXEL(finalColor, titleDraw(x, y, _GameSprites, _Font, _TitleImage));
 					break;
 				case GAMESTATE_GAME_LEVELNAME:
-					finalColor = levelNameDraw(x, y, _GameSprites, _Font);
-					if (finalColor[0] > .5) return finalColor;
+					PIXEL(finalColor, levelNameDraw(x, y, _GameSprites, _Font));
 					break;
 				case GAMESTATE_GAME_LOOP:
-					finalColor = gameDraw(x, y, _GameSprites, _Font);
-					if (finalColor[0] > .5) return finalColor;
+					PIXEL(finalColor, gameDraw(x, y, _GameSprites, _Font));
 					break;
 				case GAMESTATE_GAME_OVER:
 					// Draw "Game Over".
-					finalColor = gameOverDraw(x, y, _GameSprites, _Font);
-					if (finalColor[0] > .5) return finalColor;
-					finalColor = gameEndDraw(x, y, _GameSprites, _Font);
-					if (finalColor[0] > .5) return finalColor;
+					PIXEL(finalColor, gameOverDraw(x, y, _GameSprites, _Font));
+					PIXEL(finalColor, gameEndDraw(x, y, _GameSprites, _Font));
 					break;
 				case GAMESTATE_GAME_COMPLETE:
 					// Draw "Game Complete".
-					finalColor = gameCompleteDraw(x, y, _GameSprites, _Font);
-					if (finalColor[0] > .5) return finalColor;
-					finalColor = gameEndDraw(x, y, _GameSprites, _Font);
-					if (finalColor[0] > .5) return finalColor;
+					PIXEL(finalColor, gameCompleteDraw(x, y, _GameSprites, _Font));
+					PIXEL(finalColor, gameEndDraw(x, y, _GameSprites, _Font));
 					break;
 				case GAMESTATE_HISCORE_INPUT:
-					finalColor = hiscoreInputDraw(x, y, _GameSprites, _Font);
-					if (finalColor[0] > .5) return finalColor;
+					PIXEL(finalColor, hiscoreInputDraw(x, y, _GameSprites, _Font));
 					break;
 				case GAMESTATE_MAIN_MENU:
-					finalColor = mainMenuDraw(x, y, _GameSprites, _Font);
-					if (finalColor[0] > .5) return finalColor;
+					PIXEL(finalColor, mainMenuDraw(x, y, _GameSprites, _Font));
 					break;
 				case GAMESTATE_HISCORE_VIEW:
-					finalColor = hiscoreViewDraw(x, y, _GameSprites, _Font);
-					if (finalColor[0] > .5) return finalColor;
+					PIXEL(finalColor, hiscoreViewDraw(x, y, _GameSprites, _Font));
 					break;
 				}
 				

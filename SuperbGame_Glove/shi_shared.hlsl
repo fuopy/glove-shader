@@ -76,6 +76,8 @@
 #define GAMESTATE_GAME_PRELOOP 8
 
 // FUNCS ////////////////////////////////////////////////////////////////////
+#define PIXEL(var, color) var = (color); if (var[1] > 0.5) return var;
+
 int4 unpack(float4 val)
 {
 	return int4(val[0] * 255, val[1] * 255, val[2] * 255, val[3] * 255);
