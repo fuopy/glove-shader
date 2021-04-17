@@ -31,7 +31,7 @@
                 // Do a different thing depending on the game state.
                 updateInput(_PlayerOneJoystick);
 
-				gameState = GAMESTATE_HISCORE_VIEW;
+				gameState = GAMESTATE_GAME_TITLE;
 				prompt.active = true;
 				//prompt.cursor = 0;
 				prompt.tabCount = 10;
@@ -58,7 +58,7 @@
 				records.rooms[1] = 2;
 				records.rooms[2] = 3;
 
-				records.roomsDiscoveredMask = 0x0a4f;
+				records.roomsDiscoveredMask = 0x0;
 
 				records.names[0][0] = 'R';
 				records.names[0][1] = 'E';

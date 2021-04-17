@@ -385,14 +385,30 @@ float4 titleDraw(int x, int y, texture2D sprites, texture2D font, texture2D titl
     PIXEL(finalColor, draw_background(x, y, titleImage));
 
     // " Glove"
-    //int stringX = 32;
-    //int stringY = 32;
+    int stringX = 32;
+    int stringY = 32;
     //PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[11], font));
+	int roomsCleared = getRoomClearPercentage();
 
-    // "(c) 2016"
-    int stringX = 16;
-    int stringY = scrh-8;
-    PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[25], font));
+	if (GameMode == GAME_MODE_GLOVE)
+	{
+		if (roomsCleared > 0)
+		{
+			stringX = 6;
+			stringY = 8 * 6 + 4;
+			PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[24], font)); // "ROOMS CLEARED: "
+			stringX += 6;
+			PIXEL(finalColor, draw_integer(x, y, stringX, stringY, getRoomClearPercentage(), font));
+			PIXEL(finalColor, draw_character(x, y, stringX, stringY, '%', font));
+		}
+		else
+		{
+			// "(c) 2016 fuopy"
+			int stringX = 16;
+			int stringY = scrh - 8;
+			PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[25], font));
+		}
+	}
 
     return finalColor;
     //PIXEL(draw_integer(x, y, 0, 0, exits[0].active ? 1 : 2, font));
