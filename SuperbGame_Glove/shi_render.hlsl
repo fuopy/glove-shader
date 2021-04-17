@@ -90,6 +90,14 @@ float4 draw_background(int x, int y, texture2D tex)
 {
 	return tex[int2(x, y)];
 }
+float4 draw_filledrect(int x, int y, int minX, int minY, int maxX, int maxY, float4 color)
+{
+	if (hitbox(x, y, 0, 0, minX, minY, maxX, maxY))
+	{
+		return color;
+	}
+	return okayFloat4;
+}
 float4 draw_character(int x, int y, int sx, int sy, int id, texture2D tex)
 {
 	if (hitbox(x, y, 0, 0, sx, sy, 5, 8))
@@ -365,6 +373,15 @@ float4 gameDraw(int x, int y, texture2D sprites, texture2D font)
 	// Draw the player
 	PIXEL(finalColor, draw_explorer(x, y, p1, sprites, font));
 
+	// Draw score
+	if (rollingScore > -30) {
+		int xPos = 0;
+		int yPos = scrh - 8;
+		PIXEL(finalColor, draw_integer(x, y, xPos, yPos, score, font));
+		PIXEL(finalColor, draw_string(x, y, xPos, yPos, miscStrings[0], font));
+		PIXEL(finalColor, draw_filledrect(x, y, 0, yPos, xPos, yPos + 8, blackColor))
+	}
+
 	// Draw all walls
 	for (iter = 0; iter < numWalls; ++iter)
 	{
@@ -412,14 +429,6 @@ float4 gameDraw(int x, int y, texture2D sprites, texture2D font)
 	for (iter = 0; iter < numBullets; ++iter)
 	{
 		PIXEL(finalColor, draw_bullet(x, y, bullets[iter], sprites));
-	}
-
-	// Draw score
-	if (rollingScore > -30) {
-		int xPos = 0;
-		int yPos = scrh-8;
-		PIXEL(finalColor, draw_integer(x, y, xPos, yPos, score, font));
-		PIXEL(finalColor, draw_string(x, y, xPos, yPos, miscStrings[0], font));
 	}
 	return finalColor;
 }

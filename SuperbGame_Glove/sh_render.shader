@@ -43,10 +43,6 @@
 
 				// Update with the color Blue.
 				float4 finalColor = { 0, 0, 0, 0 };
-				float4 redColor = { 255, 0, 0, 0 };
-				float4 greenColor = { 0, 255, 0, 0 };
-				float4 blackColor = { 0, 0, 0, 0 };
-				float4 blueColor = { 0, 0, 255, 0 };
 
 				// Draw the debugging number on top of everything.
 				if (_TestNumber > 0)
@@ -112,6 +108,8 @@
 					PIXEL(finalColor, hiscoreViewDraw(x, y, _GameSprites, _Font));
 					break;
 				}
+
+				PIXEL(finalColor, draw_filledrect(x, y, 2, 2, 10, 10, redColor));
 				
 				return blackColor;
 			}

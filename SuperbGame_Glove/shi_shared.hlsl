@@ -76,7 +76,7 @@
 #define GAMESTATE_GAME_PRELOOP 8
 
 // FUNCS ////////////////////////////////////////////////////////////////////
-#define PIXEL(var, color) var = (color); if (var[1] > 0.5) return var;
+#define PIXEL(var, color) var = (color); if (var[3] > 0.5) return var;
 
 int4 unpack(float4 val)
 {
@@ -119,6 +119,13 @@ bool hitbox(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2)
 // CONSTANTS ////////////////////////////////////////////////////////////////
 static const float4 nullFloat4 = { 0, 0, 0, 1 };
 static const float4 okayFloat4 = { 0, 0, 0, 0 };
+
+// Standard colors.
+static const float4 blackColor = { 0, 0, 0, 1 };
+static const float4 whiteColor = { 1, 1, 1, 1 };
+static const float4 redColor = { 255, 0, 0, 1 };
+static const float4 greenColor = { 0, 255, 0, 1 };
+static const float4 blueColor = { 0, 0, 255, 1 };
 
 static const int numBullets = 3;
 static const int numBadguys = 20;
