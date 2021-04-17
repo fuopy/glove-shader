@@ -75,6 +75,16 @@
 						return redColor;
 					}
 				}
+
+				gameState = GAMESTATE_HISCORE_INPUT;
+				prompt.cursor = 0;
+				prompt.tabCount = 10;
+				prompt.tabWidth = 2;
+
+				prompt.inputBuffer[0] = 'Y';
+				prompt.inputBuffer[1] = 'O';
+				prompt.inputBuffer[2] = 'U';
+				prompt.inputBufferLength = 0;
 				
 				// Change update logic based on game state.
 				switch (gameState)
@@ -108,8 +118,6 @@
 					PIXEL(finalColor, hiscoreViewDraw(x, y, _GameSprites, _Font));
 					break;
 				}
-
-				PIXEL(finalColor, draw_filledrect(x, y, 2, 2, 10, 10, redColor));
 				
 				return blackColor;
 			}

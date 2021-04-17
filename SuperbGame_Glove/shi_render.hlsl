@@ -67,7 +67,7 @@ static const int miscStrings[26][16] = {
 	{'(', 'C', ')', ' ', '2', '0', '1', '6', ' ', 'f', 'u', 'o', 'p', 'y','\0', '\0'}  // "(c) 2016 fuopy"
 };
 
-static const int menuStrings[15][22] = {
+static const int menuStrings[19][22] = {
 	{'[', ' ', ' ', ' ', ' ', ' ', 'M', 'a', 'i', 'n', ' ', 'M', 'e', 'n', 'u', ' ', ' ', ' ', ' ', ' ', ']', '\0'}, // "[     Main Menu     ]"
 	{'C', 'o', 'n', 't', 'i', 'n', 'u', 'e', ':','\0', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '\0'}, // "Continue:"
 	{'N', 'e', 'w', ' ', 'G', 'a', 'm', 'e','\0', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '\0'}, // "New Game"
@@ -82,7 +82,18 @@ static const int menuStrings[15][22] = {
 	{'Y', 'e', 's', ',', ' ', 'I','\'', 'm', ' ', 's', 'u', 'r', 'e', '.','\0', ' ', ' ', ' ', ' ', ' ', ' ', '\0'}, // "Yes, I'm sure."
 	{'Y', 'o', 'u', ' ', 's', 'e', 't', ' ', 'a', ' ', 'h', 'i', 'g', 'h', ' ', 's', 'c', 'o', 'r', 'e', '!', '\0'}, // "You set a high score!"
 	{'E', 'n', 't', 'e', 'r', ' ', 'n', 'a', 'm', 'e', ':', ' ','\"','\0', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '\0'}, // "Enter name: \""
-	{'\"','\0',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '\0'}  // "\""
+	{'\"','\0',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '\0'}, // "\""
+	{' ', '1', ' ', '2', ' ', '3', ' ', '4', ' ', '5', ' ', '6', ' ', '7', ' ', '8', ' ', '9', ' ', '0', '\0','\0'}, // " 1 2 3 4 5 6 7 8 9 0"
+	{' ', 'Q', ' ', 'W', ' ', 'E', ' ', 'R', ' ', 'T', ' ', 'Y', ' ', 'U', ' ', 'I', ' ', 'O', ' ', 'P', '\0','\0'}, // " Q W E R T Y U I O P"
+	{' ', 'A', ' ', 'S', ' ', 'D', ' ', 'F', ' ', 'G', ' ', 'H', ' ', 'J', ' ', 'K', ' ', 'L', ' ', ' ', '\0','\0'}, // " A S D F G H J K L  "
+	{' ', 'Z', ' ', 'X', ' ', 'C', ' ', 'V', ' ', 'B', ' ', 'N', ' ', 'M', ' ', ' ', ' ', ' ', ' ', ' ', '\0','\0'}  // " Z X C V B N M      "
+};
+
+static const int keyboardReturnString[] = { // "1234567890QWERTYUIOPASDFGHJKL ZXCVBNM   "
+	'1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+	'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
+	'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ' ',
+	'Z', 'X', 'C', 'V', 'B', 'N', 'M', ' ', ' ', ' '
 };
 
 // HELPER ROUTINES //////////////////////////////////////////////////////////
@@ -129,6 +140,23 @@ float4 draw_string(int x, int y, inout int sx, inout int sy, const int str[16], 
 	}
 	return finalColor;
 }
+float4 draw_menuString(int x, int y, inout int sx, inout int sy, const int str[22], texture2D tex)
+{
+	float4 finalColor = okayFloat4;
+	int index = 0;
+	int gotChar = 0;
+
+	gotChar = str[index];
+	while (index < MAX_STRING_SIZE && gotChar != '\0')
+	{
+		PIXEL(finalColor, draw_character(x, y, sx, sy, gotChar, tex));
+		++index;
+		sx += 6;
+		gotChar = str[index];
+	}
+	return finalColor;
+}
+
 float4 draw_integer(int x, int y, inout int destx, inout int desty, int val, texture2D tex)
 {
 	float4 finalColor = okayFloat4;
@@ -322,6 +350,36 @@ float4 draw_wall(int x, int y, inout Wall obj, texture2D tex)
 	}
 	return finalColor;
 }
+// PROMPT ////////////////////////////////////////////////////////////////////
+float4 draw_prompt(int x, int y, inout Prompt obj, texture2D tex)
+{
+	float4 finalColor = okayFloat4;
+	// TODO: Active check.
+
+	// Draw cursor.
+	int stringX = (obj.cursor % obj.tabCount) * 6 * obj.tabWidth;
+	int stringY = (obj.cursor / obj.tabCount) * 8 + 24;
+	PIXEL(finalColor, draw_character(x, y, stringX, stringY, '>', tex));
+
+	// Draw choices.
+	stringX = 0;
+	stringY = 24;
+	PIXEL(finalColor, draw_menuString(x, y, stringX, stringY, menuStrings[15], tex));
+
+	stringX = 0;
+	stringY = 32;
+	PIXEL(finalColor, draw_menuString(x, y, stringX, stringY, menuStrings[16], tex));
+
+	stringX = 0;
+	stringY = 40;
+	PIXEL(finalColor, draw_menuString(x, y, stringX, stringY, menuStrings[17], tex));
+
+	stringX = 0;
+	stringY = 48;
+	PIXEL(finalColor, draw_menuString(x, y, stringX, stringY, menuStrings[18], tex));
+
+	return finalColor;
+}
 
 // GAMESTATE ROUTINES ///////////////////////////////////////////////////////
 void displayTitle();
@@ -450,7 +508,7 @@ float4 gameCompleteDraw(int x, int y, texture2D sprites, texture2D font)
 	int stringX = 3 * 6;
 	int stringY = 8 * 1;
 
-	// ""Game Complete!"
+	// "Game Complete!"
 	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[6], font));
 	return finalColor;
 }
@@ -498,8 +556,24 @@ float4 hiscoreInputDraw(int x, int y, texture2D sprites, texture2D font)
 	float4 finalColor = okayFloat4;
 	int stringX = 0;
 	int stringY = 0;
+	PIXEL(finalColor, draw_menuString(x, y, stringX, stringY, menuStrings[12], font)); // "You set a high score!"
 
-	PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[1], font));
+	stringX = 0;
+	stringY = 8;
+	PIXEL(finalColor, draw_menuString(x, y, stringX, stringY, menuStrings[13], font)); // "Enter name: \""
+
+	PIXEL(finalColor, draw_character(x, y, stringX, stringY, prompt.inputBuffer[0], font)); // prompt.inputBuffer[0]
+	stringX += 6;
+	PIXEL(finalColor, draw_character(x, y, stringX, stringY, prompt.inputBuffer[1], font)); // prompt.inputBuffer[1]
+	stringX += 6;
+	PIXEL(finalColor, draw_character(x, y, stringX, stringY, prompt.inputBuffer[2], font)); // prompt.inputBuffer[2]
+	stringX += 6;
+	PIXEL(finalColor, draw_character(x, y, stringX, stringY, prompt.inputBuffer[3], font)); // prompt.inputBuffer[3]
+	stringX += 6;
+	PIXEL(finalColor, draw_character(x, y, stringX, stringY, '\"', font)); // "\""
+
+	PIXEL(finalColor, draw_prompt(x, y, prompt, font));
+	
 	return finalColor;
 }
 float4 mainMenuDraw(int x, int y, texture2D sprites, texture2D font)

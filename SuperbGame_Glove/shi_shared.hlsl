@@ -310,6 +310,16 @@ struct Wall {
 	int style;               // ROW_WALL_STYLE
 };
 
+// New types in shader port.
+#define MAX_PROMPT_INPUT_BUFFER 4
+struct Prompt {
+	int cursor;
+	int tabCount;
+	int tabWidth;
+	int inputBufferLength;
+	int inputBuffer[MAX_PROMPT_INPUT_BUFFER];
+};
+
 // GLOBALS //////////////////////////////////////////////////////////////////
 static Bullet bullets[3];
 static BadGuy badguys[20];
@@ -319,6 +329,8 @@ static Key keys[4];
 static Treasure treasures[9];
 static Spawner spawners[4];
 static Exit exits[4];
+
+static Prompt prompt;
 
 static int spawnx; //short			   // SINGLE_SPAWNX
 static int spawny; //short			   // SINGLE_SPAWNY
