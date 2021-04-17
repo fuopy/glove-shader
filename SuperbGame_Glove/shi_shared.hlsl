@@ -154,8 +154,6 @@ NEW_MEMORY_SINGLE(explorer_anim, 1)  // Length 1
 NEW_MEMORY_ARRAY(arr_wall_xya, 1)    // Length numWalls (16)
 NEW_MEMORY_ARRAY(arr_wall_whs, 2)    // Length numWalls (16)
 
-
-
 // MEMORY TABLE ////////////////////////////////////////////////////////////
 
 // SINGLES /////////////////////////////////////////////////////////////////
@@ -1134,12 +1132,11 @@ int getRoomClearPercentage()
 	int block;
 	int completed = 0;
 
-	if (!records.valid) return 0;
-
 	//for (char blockNum = 0; blockNum < 5; ++blockNum) {
 	block = records.roomsDiscoveredMask;
 	for (i = 0; i < 32; ++i) {
-		if ((block >> i) & 1) completed++;
+		completed += (block & 1);
+		block >>= 1;
 	}
 	//}
 	return (completed * 100) / 30;

@@ -334,9 +334,9 @@ void add_exit(int x, int y, int dest)
         }
     }
 }
-void activate_exit(inout Exit obj)
+// Returns true if exit was activated.
+bool activate_exit(inout Exit obj)
 {
-    levelsCompleted++;
     if (!quitGame)
     {
         // If playing RANDOM mode
@@ -348,9 +348,12 @@ void activate_exit(inout Exit obj)
         else {
             // Mark this room as cleared in save file
             markRoomAsCleared(currentLevel);
+			levelsCompleted++;
             gameGotoLevel(obj.dest);
+			return true;
         }
     }
+	return false;
 }
 // EXPLORER /////////////////////////////////////////////////////////////////
 void initialize_explorer(inout Explorer obj)
@@ -518,7 +521,10 @@ void update_explorer(inout Explorer obj)
         wy = exits[i].y * 8;
         if (intersectSpriteSprite(obj.x, obj.y, wx, wy))
         {
-            activate_exit(exits[i]);
+			if (activate_exit(exits[i]))
+			{
+				return;
+			}
         }
     }
 
@@ -931,6 +937,8 @@ void levelNameUpdate()
     {
         // Load the next level
         worldLoadLevel();
+		scrollx = 64 - p1.x;
+		scrolly = 32 - p1.y;
     }
     
     if (wallsMap <= 0)
@@ -939,11 +947,34 @@ void levelNameUpdate()
     }
 }
 
+int getHighScoreIndex()
+{
+	// Check if the current score is a new record. If not, change state to title right away.
+	int myScoreIndex;
+	int compareScore;
+
+	// Check if you have a high score.
+	for (myScoreIndex = 0; myScoreIndex < MAX_HIGH_SCORES; ++myScoreIndex)
+	{
+		compareScore = records.scores[myScoreIndex];
+		if (score > compareScore) break;
+	}
+	return myScoreIndex;
+}
+
 void gameEndUpdate()
 {
     if (A_PRESSED)
     {
-        gameState = GAMESTATE_GAME_TITLE;
+		if (getHighScoreIndex() >= 3)
+		{
+			// No high score. Bummer!
+			gameState = GAMESTATE_GAME_TITLE;
+			return;
+		}
+
+		// High score! Input your name! 
+        gameState = GAMESTATE_HISCORE_INPUT;
     }
 }
 
@@ -951,15 +982,38 @@ void hiscoreInputUpdate()
 {
     update_prompt(prompt);
 
+	int myScoreIndex = getHighScoreIndex();
+
 	if (!prompt.active)
 	{
-		gameState = GAMESTATE_MAIN_MENU;
-		prompt.inputBufferLength = 0;
-		prompt.inputBuffer[0] = 0;
-		prompt.inputBuffer[1] = 0;
-		prompt.inputBuffer[2] = 0;
-		prompt.inputBuffer[3] = 0;
-		prompt.cursor = 0;
+		// Shift down the records of lower scores.
+		for (int i = 2; i > myScoreIndex; --i)
+		{
+			//records.times[i] = records.times[i - 1];
+			//records.rooms[i] = records.rooms[i - 1];
+			//records.scores[i] = records.scores[i - 1];
+			//records.names[i][0] = records.names[i - 1][0];
+			//records.names[i][1] = records.names[i - 1][1];
+			//records.names[i][2] = records.names[i - 1][2];
+			//records.names[i][3] = records.names[i - 1][3];
+		}
+
+		// Copy in the new high score.
+		//records.times[myScoreIndex] = gameTime;
+		//records.scores[myScoreIndex] = score;
+		//records.rooms[myScoreIndex] = levelsCompleted;
+		//records.names[myScoreIndex][0] = prompt.inputBuffer[0];
+		//records.names[myScoreIndex][1] = prompt.inputBuffer[1];
+		//records.names[myScoreIndex][2] = prompt.inputBuffer[2];
+		//records.names[myScoreIndex][3] = prompt.inputBuffer[3];
+
+		//records.valid = true;
+		//gameState = GAMESTATE_HISCORE_VIEW;
+		//prompt.inputBufferLength = 0;
+		//prompt.inputBuffer[0] = 0;
+		//prompt.inputBuffer[1] = 0;
+		//prompt.inputBuffer[2] = 0;
+		//prompt.inputBuffer[3] = 0;
 	}
 }
 
@@ -977,7 +1031,7 @@ void hiscoreViewUpdate()
     // TODO: Allow input.
     if (A_PRESSED)
     {
-        gameState = GAMESTATE_MAIN_MENU;
+        gameState = GAMESTATE_GAME_TITLE;
     }
 }
 
@@ -1093,16 +1147,9 @@ void displayGame()
     //gameLevelName();
 }
 
-
 void markRoomAsCleared(int room)
 {
-    //TODO: Make sure there's actually stuff getting saved.
-    
-    //if(room > numLevels) return;
-    //int address = GameSaveOffset;
-    //int pos = address+FILE_COMPLETION+(room/8);
-    //char data = EEPROM.read(pos);
-    //data |= 1 << (room%8);
-    //EEPROM.write(pos, data);
+    if(room > numLevels) return;
+	records.roomsDiscoveredMask |= (1 << room);
 }
 

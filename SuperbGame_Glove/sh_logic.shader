@@ -31,13 +31,18 @@
                 // Do a different thing depending on the game state.
                 updateInput(_PlayerOneJoystick);
 
-				gameState = GAMESTATE_GAME_TITLE;
+				//gameState = GAMESTATE_GAME_TITLE;
 				prompt.active = true;
 				//prompt.cursor = 0;
 				prompt.tabCount = 10;
 				prompt.tabWidth = 2;
 				prompt.rows = 4;
 				//prompt.inputBufferLength = 0;
+
+				//records.roomsDiscoveredMask = 0x0;
+				//markRoomAsCleared(0);
+				//markRoomAsCleared(1);
+				//records.roomsDiscoveredMask = 0xfea;
 
 				//prompt.inputBuffer[0] = 'Y';
 				//prompt.inputBuffer[1] = 'O';
@@ -46,33 +51,33 @@
 
 				records.valid = true;
 
-				records.scores[0] = 1;
-				records.scores[1] = 2;
-				records.scores[2] = 3;
+				//records.scores[0] = 1;
+				//records.scores[1] = 2;
+				//records.scores[2] = 3;
 
-				records.times[0] = 1;
-				records.times[1] = 2;
-				records.times[2] = 3;
+				//records.times[0] = 1;
+				//records.times[1] = 2;
+				//records.times[2] = 3;
 
-				records.rooms[0] = 1;
-				records.rooms[1] = 2;
-				records.rooms[2] = 3;
+				//records.rooms[0] = 1;
+				//records.rooms[1] = 2;
+				//records.rooms[2] = 3;
 
-				records.roomsDiscoveredMask = 0x0;
+				//records.roomsDiscoveredMask = 0x0;
 
-				records.names[0][0] = 'R';
-				records.names[0][1] = 'E';
-				records.names[0][2] = 'A';
+				//records.names[0][0] = 'R';
+				//records.names[0][1] = 'E';
+				//records.names[0][2] = 'A';
 
-				records.names[1][0] = 'B';
-				records.names[1][1] = 'D';
+				//records.names[1][0] = 'B';
+				//records.names[1][1] = 'D';
 
-				records.names[2][0] = 'Y';
-				records.names[2][1] = 'E';
-				records.names[2][2] = 'S';
-				records.names[2][3] = 'U';
+				//records.names[2][0] = 'Y';
+				//records.names[2][1] = 'E';
+				//records.names[2][2] = 'S';
+				//records.names[2][3] = 'U';
                 
-                // Change update logic based on game state.
+                // Change update logic based on game state!
                 switch (gameState)
                 {
                 case GAMESTATE_GAME_TITLE:
