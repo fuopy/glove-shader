@@ -989,31 +989,37 @@ void hiscoreInputUpdate()
 		// Shift down the records of lower scores.
 		for (int i = 2; i > myScoreIndex; --i)
 		{
-			//records.times[i] = records.times[i - 1];
-			//records.rooms[i] = records.rooms[i - 1];
-			//records.scores[i] = records.scores[i - 1];
-			//records.names[i][0] = records.names[i - 1][0];
-			//records.names[i][1] = records.names[i - 1][1];
-			//records.names[i][2] = records.names[i - 1][2];
-			//records.names[i][3] = records.names[i - 1][3];
+			records.times[i] = records.times[i - 1];
+			records.rooms[i] = records.rooms[i - 1];
+			records.scores[i] = records.scores[i - 1];
+			records.names[i][0] = records.names[i - 1][0];
+			records.names[i][1] = records.names[i - 1][1];
+			records.names[i][2] = records.names[i - 1][2];
+			records.names[i][3] = records.names[i - 1][3];
 		}
 
-		// Copy in the new high score.
-		//records.times[myScoreIndex] = gameTime;
-		//records.scores[myScoreIndex] = score;
-		//records.rooms[myScoreIndex] = levelsCompleted;
-		//records.names[myScoreIndex][0] = prompt.inputBuffer[0];
-		//records.names[myScoreIndex][1] = prompt.inputBuffer[1];
-		//records.names[myScoreIndex][2] = prompt.inputBuffer[2];
-		//records.names[myScoreIndex][3] = prompt.inputBuffer[3];
+		// Copy in the new high score. // TODO: "Array reference can not be used as an l-value", this is a weird workaround because the simple copy approach doesn't work.
+		for (int i = 0; i < MAX_HIGH_SCORES; ++i)
+		{
+			if (i == myScoreIndex)
+			{
+				records.times[i] = gameTime;
+				records.scores[i] = score;
+				records.rooms[i] = levelsCompleted;
+				records.names[i][0] = prompt.inputBuffer[0];
+				records.names[i][1] = prompt.inputBuffer[1];
+				records.names[i][2] = prompt.inputBuffer[2];
+				records.names[i][3] = prompt.inputBuffer[3];
+			}
+		}
 
-		//records.valid = true;
-		//gameState = GAMESTATE_HISCORE_VIEW;
-		//prompt.inputBufferLength = 0;
-		//prompt.inputBuffer[0] = 0;
-		//prompt.inputBuffer[1] = 0;
-		//prompt.inputBuffer[2] = 0;
-		//prompt.inputBuffer[3] = 0;
+		records.valid = true;
+		gameState = GAMESTATE_HISCORE_VIEW;
+		prompt.inputBufferLength = 0;
+		prompt.inputBuffer[0] = 0;
+		prompt.inputBuffer[1] = 0;
+		prompt.inputBuffer[2] = 0;
+		prompt.inputBuffer[3] = 0;
 	}
 }
 
