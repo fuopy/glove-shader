@@ -628,7 +628,7 @@ float4 hiscoreViewDraw(int x, int y, texture2D sprites, texture2D font)
 		stringY = 8 * 7;
 		PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[24], font)); // "ROOMS CLEARED: "
 		stringX += 6;
-		PIXEL(finalColor, draw_integer(x, y, stringX, stringY, 0, font));
+		PIXEL(finalColor, draw_integer(x, y, stringX, stringY, getRoomClearPercentage(), font));
 		PIXEL(finalColor, draw_character(x, y, stringX, stringY, '%', font));
 	}
 

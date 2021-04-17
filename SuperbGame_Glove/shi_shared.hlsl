@@ -212,6 +212,9 @@ NEW_MEMORY_ARRAY(arr_wall_whs, 2)    // Length numWalls (16)
 #define SINGLE_PROMPT_ROWS 85
 #define SINGLE_PROMPT_INPUTBUFFERLENGTH 86
 
+#define SINGLE_RECORDS_DISCOVERED 87
+#define SINGLE_RECORDS_VALID 88
+
 // ROWS ////////////////////////////////////////////////////////////////////
 #define ROW_SINGLE_VARS 0
 #define ROW_WALL_XYA 1
@@ -260,6 +263,13 @@ NEW_MEMORY_ARRAY(arr_wall_whs, 2)    // Length numWalls (16)
 #define ROW_WALL_STYLE 32
 
 #define ROW_PROMPT_INPUTBUFFER 33
+
+#define ROW_RECORDS_TIMES 34
+#define ROW_RECORDS_SCORES 35
+#define ROW_RECORDS_ROOMS 36
+#define ROW_RECORDS_NAME_1 37
+#define ROW_RECORDS_NAME_2 38
+#define ROW_RECORDS_NAME_3 49
 
 // TYPES ////////////////////////////////////////////////////////////////////
 struct BadGuy {
@@ -332,11 +342,12 @@ struct Prompt {
 };
 #define MAX_HIGH_SCORES 3
 struct Records {
-	int times[MAX_HIGH_SCORES];
-	int scores[MAX_HIGH_SCORES];
-	int rooms[MAX_HIGH_SCORES];
-	int names[MAX_HIGH_SCORES][MAX_PROMPT_INPUT_BUFFER];
-	int roomsDiscoveredMask;
+	int times[MAX_HIGH_SCORES];                           // ROW_RECORDS_TIMES
+	int scores[MAX_HIGH_SCORES];                          // ROW_RECORDS_SCORES
+	int rooms[MAX_HIGH_SCORES];                           // ROW_RECORDS_ROOMS
+	int names[MAX_HIGH_SCORES][MAX_PROMPT_INPUT_BUFFER];  // ROW_RECORDS_NAME_1, ROW_RECORDS_NAME_2, ROW_RECORDS_NAME_3
+	int roomsDiscoveredMask;                              // SINGLE_RECORDS_DISCOVERED
+	int valid;                                            // SINGLE_RECORDS_VALID
 };
 
 // GLOBALS //////////////////////////////////////////////////////////////////
@@ -389,7 +400,6 @@ static bool old_up;    // SINGLE_OLD_UP
 static bool old_down;  // SINGLE_OLD_DOWN
 static bool old_left;  // SINGLE_OLD_LEFT
 static bool old_right; // SINGLE_OLD_RIGHT
-
 
 
 void updateInput(int inputState)
@@ -481,6 +491,7 @@ void load_state(texture2D tex)
     // Load all memory values.
     //load_explorer_state(tex);
     int i;
+	int j;
 
     p1.x = unpack_int(tex[int2(SINGLE_EXPLORER_X, ROW_SINGLE)]);
     p1.y = unpack_int(tex[int2(SINGLE_EXPLORER_Y, ROW_SINGLE)]);
@@ -521,6 +532,20 @@ void load_state(texture2D tex)
 	prompt.tabWidth = unpack_int(tex[int2(SINGLE_PROMPT_TABWIDTH, ROW_SINGLE)]);
 	prompt.rows = unpack_int(tex[int2(SINGLE_PROMPT_ROWS, ROW_SINGLE)]);
 	prompt.inputBufferLength = unpack_int(tex[int2(SINGLE_PROMPT_INPUTBUFFERLENGTH, ROW_SINGLE)]);
+
+	records.roomsDiscoveredMask = unpack_int(tex[int2(SINGLE_RECORDS_DISCOVERED, ROW_SINGLE)]);
+	records.valid = unpack_int(tex[int2(SINGLE_RECORDS_VALID, ROW_SINGLE)]);
+
+	for (i = 0; i < MAX_HIGH_SCORES; ++i)
+	{
+		records.times[i] = unpack_int(tex[int2(i, ROW_RECORDS_TIMES)]);
+		records.scores[i] = unpack_int(tex[int2(i, ROW_RECORDS_SCORES)]);
+		records.rooms[i] = unpack_int(tex[int2(i, ROW_RECORDS_ROOMS)]);
+	}
+
+	for (i = 0; i < MAX_PROMPT_INPUT_BUFFER; ++i) records.names[0][i] = unpack_int(tex[int2(i, ROW_RECORDS_NAME_1)]);
+	for (i = 0; i < MAX_PROMPT_INPUT_BUFFER; ++i) records.names[1][i] = unpack_int(tex[int2(i, ROW_RECORDS_NAME_2)]);
+	for (i = 0; i < MAX_PROMPT_INPUT_BUFFER; ++i) records.names[2][i] = unpack_int(tex[int2(i, ROW_RECORDS_NAME_3)]);
 
     new_a = (unpack_int(tex[int2(SINGLE_NEW_A, ROW_SINGLE)]) > 0 ? true : false);
     new_b = (unpack_int(tex[int2(SINGLE_NEW_B, ROW_SINGLE)]) > 0 ? true : false);
@@ -778,6 +803,14 @@ float4 save_PromptInputBufferLength()
 {
 	return pack_it(prompt.inputBufferLength);
 }
+float4 save_RecordsRoomsDiscoveredMask()
+{
+	return pack_it(records.roomsDiscoveredMask);
+}
+float4 save_RecordsValid()
+{
+	return pack_it(records.valid);
+}
 
 float4 save_Single(int x)
 {
@@ -836,6 +869,9 @@ float4 save_Single(int x)
     
     case SINGLE_GAMESTATE: return save_GameState();
     case SINGLE_LOGIC_CLOCKTICK: return save_LogicClockTick();
+
+	case SINGLE_RECORDS_DISCOVERED: return save_RecordsRoomsDiscoveredMask();
+	case SINGLE_RECORDS_VALID: return save_RecordsValid();
     }
     return nullFloat4;
 }
@@ -1004,6 +1040,36 @@ float4 save_PromptInputBuffer(int id)
 	if (id >= MAX_PROMPT_INPUT_BUFFER) return nullFloat4;
 	return pack_it(prompt.inputBuffer[id]);
 }
+float4 save_RecordsTimes(int id)
+{
+	if (id >= MAX_HIGH_SCORES) return nullFloat4;
+	return pack_it(records.times[id]);
+}
+float4 save_RecordsScores(int id)
+{
+	if (id >= MAX_HIGH_SCORES) return nullFloat4;
+	return pack_it(records.scores[id]);
+}
+float4 save_RecordsRooms(int id)
+{
+	if (id >= MAX_HIGH_SCORES) return nullFloat4;
+	return pack_it(records.rooms[id]);
+}
+float4 save_RecordsName1(int id)
+{
+	if (id >= MAX_PROMPT_INPUT_BUFFER) return nullFloat4;
+	return pack_it(records.names[0][id]);
+}
+float4 save_RecordsName2(int id)
+{
+	if (id >= MAX_PROMPT_INPUT_BUFFER) return nullFloat4;
+	return pack_it(records.names[1][id]);
+}
+float4 save_RecordsName3(int id)
+{
+	if (id >= MAX_PROMPT_INPUT_BUFFER) return nullFloat4;
+	return pack_it(records.names[2][id]);
+}
 
 float4 save_state(int x, int y)
 {
@@ -1049,9 +1115,34 @@ float4 save_state(int x, int y)
     case ROW_WALL_STYLE: return save_WallStyle(x);
 
 	case ROW_PROMPT_INPUTBUFFER: return save_PromptInputBuffer(x);
+
+	case ROW_RECORDS_TIMES: return save_RecordsTimes(x);
+	case ROW_RECORDS_SCORES: return save_RecordsScores(x);
+	case ROW_RECORDS_ROOMS: return save_RecordsRooms(x);
+	case ROW_RECORDS_NAME_1: return save_RecordsName1(x);
+	case ROW_RECORDS_NAME_2: return save_RecordsName2(x);
+	case ROW_RECORDS_NAME_3: return save_RecordsName3(x);
     }
 
     return nullFloat4;
+}
+
+// RECORDS ///////////////////////////////////////////////////////////////////
+int getRoomClearPercentage()
+{
+	int i;
+	int block;
+	int completed = 0;
+
+	if (!records.valid) return 0;
+
+	//for (char blockNum = 0; blockNum < 5; ++blockNum) {
+	block = records.roomsDiscoveredMask;
+	for (i = 0; i < 32; ++i) {
+		if ((block >> i) & 1) completed++;
+	}
+	//}
+	return (completed * 100) / 30;
 }
 
 

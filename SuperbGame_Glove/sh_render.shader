@@ -75,18 +75,6 @@
                         return redColor;
                     }
                 }
-
-				records.names[0][0] = 'Y';
-				records.names[0][1] = 'O';
-				records.names[0][2] = 'U';
-
-				records.names[1][0] = 'M';
-				records.names[1][1] = 'E';
-
-				records.names[2][0] = 'T';
-				records.names[2][1] = 'E';
-				records.names[2][2] = 'S';
-				records.names[2][3] = 'T';
                 
                 // Change update logic based on game state.
                 switch (gameState)
