@@ -6,7 +6,7 @@ CustomRenderTexture:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: crt_superb_inputbuffer
+  m_Name: crt_logic
   m_ImageContentsHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
@@ -32,9 +32,9 @@ CustomRenderTexture:
     m_WrapW: 1
   m_Dimension: 2
   m_VolumeDepth: 1
-  m_Material: {fileID: 2100000, guid: 0c4295110da06dd488544d80996b54d0, type: 2}
+  m_Material: {fileID: 2100000, guid: 5b4457ed888bf324594214d52f7ff68d, type: 2}
   m_InitSource: 0
-  m_InitMaterial: {fileID: 2100000, guid: c1a16c57d8a225c469745ae861008b85, type: 2}
+  m_InitMaterial: {fileID: 2100000, guid: eddbbac58ef9d2e4f835b264228b050f, type: 2}
   m_InitColor: {r: 0, g: 0, b: 0, a: 0}
   m_InitTexture: {fileID: 0}
   m_UpdateMode: 1
@@ -42,7 +42,7 @@ CustomRenderTexture:
   m_UpdateZoneSpace: 0
   m_CurrentUpdateZoneSpace: 0
   m_UpdateZones: []
-  m_UpdatePeriod: 0.02
+  m_UpdatePeriod: 0.015
   m_ShaderPass: 0
   m_CubemapFaceMask: 4294967295
   m_DoubleBuffered: 1

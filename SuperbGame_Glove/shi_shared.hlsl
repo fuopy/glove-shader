@@ -364,8 +364,8 @@ void updateInput(int inputState)
 	new_b = inputState & 2;
 	new_left = inputState & 4;
 	new_right = inputState & 8;
-	new_down = inputState & 16;
-	new_up = inputState & 32;
+	new_up = inputState & 16;
+	new_down = inputState & 32;
 
 	//new_a = (joystick[3] > 0);
 	//new_b = (joystick[2] > 0);

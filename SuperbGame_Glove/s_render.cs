@@ -4,7 +4,7 @@ using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 
-public class s_plane_superb_renderer : UdonSharpBehaviour
+public class s_render : UdonSharpBehaviour
 {
     public override void Interact()
     {

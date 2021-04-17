@@ -1,6 +1,5 @@
-#include "shi_superb_shared.hlsl"
-#include "shi_superb_uppershared.hlsl"
-#include "shi_superb_leveldata.hlsl"
+#include "shi_shared.hlsl"
+#include "shi_leveldata.hlsl"
 
 // GENERAL ROUTINES /////////////////////////////////////////////////////////
 // PHYSICS //
@@ -688,7 +687,7 @@ void worldLoadLevel()
 	// Clear the level
 	worldClearLevel();
 	
-		// Read shorts from the memory
+	// Read shorts from the memory
 	for(int i=0; i<32; ++i) {
 		dataItem = levelData[levelOffset + i];
 		
@@ -846,12 +845,15 @@ void titleUpdate()
 void levelNameUpdate()
 {
 	wallsMap--;
-	
-	if (wallsMap <= 0)
+
+	if (wallsMap == 1)
 	{
 		// Load the next level
 		worldLoadLevel();
-		
+	}
+	
+	if (wallsMap <= 0)
+	{
 		gameState = GAMESTATE_GAME_LOOP;
 	}
 }

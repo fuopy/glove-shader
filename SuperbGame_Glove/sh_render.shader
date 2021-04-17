@@ -1,11 +1,9 @@
-﻿Shader "superb/sh_superb_renderer_update"
+﻿Shader "SuperbGame_Glove/sh_render"
 {
 	Properties
 	{
-		_RendererCanvas("RendererCanvas", 2D) = "gray" {}
-		_GameProcessorCanvas("GameProcessorCanvas", 2D) = "gray" {}
+		_LogicCanvas("LogicCanvas", 2D) = "gray" {}
 
-		_BackgroundImage("BackgroundImage", 2D) = "gray" {}
 		_GameSprites("GameSprites", 2D) = "gray" {}
 		_Font("Font", 2D) = "gray" {}
 		_TitleImage("TitleImage", 2D) = "gray" {}
@@ -20,14 +18,12 @@
 		{
 			CGPROGRAM
 			#include "UnityCustomRenderTexture.cginc"
-			#include "shi_superb_render.hlsl"
+			#include "shi_render.hlsl"
 			#pragma vertex CustomRenderTextureVertexShader
 			#pragma fragment fragr
 			#pragma target 5.0
 
-			uniform texture2D _RendererCanvas; // Read, Write.
-			uniform texture2D _GameProcessorCanvas; // Read Only.
-			uniform texture2D _BackgroundImage;
+			uniform texture2D _LogicCanvas; // Read Only.
 			uniform texture2D _GameSprites;
 			uniform texture2D _Font;
 			uniform texture2D _TitleImage;
@@ -36,11 +32,6 @@
 			uniform int _TestNumber2; // A debugging number, shown in green.
 			uniform int _TestNumber3; // A debugging number, shown in red.
 
-			//struct gameStrings {
-			//	int levelNames[30][16];
-			//};
-
-
 			float4 fragr(v2f_customrendertexture IN) : COLOR
 			{
 				static const float IMAGE_WIDTH = 128.0;
@@ -48,8 +39,7 @@
 				int x = floor(IN.localTexcoord[0] * IMAGE_WIDTH);
 				int y = floor(IN.localTexcoord[1] * IMAGE_HEIGHT);
 				
-				load_state(_GameProcessorCanvas);
-				//return gameDraw(x, y, _GameSprites, _Font);
+				load_state(_LogicCanvas);
 
 				// Update with the color Blue.
 				float4 finalColor = { 0, 0, 0, 0 };

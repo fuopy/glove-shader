@@ -4,7 +4,7 @@ using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 
-public class s_plane_superb_gameprocessor : UdonSharpBehaviour
+public class s_plane_superb2_logic : UdonSharpBehaviour
 {
     public Material gameLogicMaterial;
 
@@ -66,7 +66,7 @@ public class s_plane_superb_gameprocessor : UdonSharpBehaviour
 
     private void OnPostRender()
     {
-        Texture2D tex = (Texture2D)gameLogicMaterial.GetTexture("GameProcessorCanvas");
+        Texture2D tex = (Texture2D)gameLogicMaterial.GetTexture("LogicCanvas");
         tex.ReadPixels(new Rect(0, 0, 1, 1), 0, 0, false);
         Color[] pixels = tex.GetPixels();
         Debug.Log(pixels.GetValue(1));

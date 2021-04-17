@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
-  m_Name: s_plane_superb_gameprocessor
+  m_Name: s_logic
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 5b2df799e8fea6643989fa813104eb08,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 273fe16343ef0b042b34a19d1a2c8e0a,
     type: 2}
   udonAssembly: 
   assemblyError: 

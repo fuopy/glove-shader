@@ -1,4 +1,4 @@
-#include "shi_superb_shared.hlsl"
+#include "shi_shared.hlsl"
 
 // DATA
 
@@ -268,7 +268,7 @@ float4 draw_explorer(int x, int y, inout Explorer obj, texture2D tex, texture2D 
 		// Draw player health.
 		if (rollingScore <= -30) {
 			int drawx = 0;
-			int drawy = 0;
+			int drawy = scrh-8;
 			finalColor = draw_integer(x, y, drawx, drawy, obj.health, font);
 			if (finalColor[0] > .5) return finalColor;
 		}
@@ -337,7 +337,7 @@ float4 titleDraw(int x, int y, texture2D sprites, texture2D font, texture2D titl
 
 	// "(c) 2016"
 	int stringX = 16;
-	int stringY = 0;
+	int stringY = scrh-8;
 	finalColor = draw_string(x, y, stringX, stringY, miscStrings[25], font);
 	if (finalColor[0] > .5) return finalColor;
 
@@ -349,7 +349,7 @@ float4 titleDraw(int x, int y, texture2D sprites, texture2D font, texture2D titl
 float4 levelNameDraw(int x, int y, texture2D sprites, texture2D font)
 {
 	int stringX = 0;
-	int stringY = 0;
+	int stringY = scrh-8;
 
 	// "Dynamic Level Name"
 	float4 finalColor = draw_string(x, y, stringX, stringY, levelNames[currentLevel], font);
@@ -439,7 +439,7 @@ float4 gameDraw(int x, int y, texture2D sprites, texture2D font)
 	// Draw score
 	if (rollingScore > -30) {
 		int xPos = 0;
-		int yPos = 0;
+		int yPos = scrh-8;
 		finalColor = draw_integer(x, y, xPos, yPos, score, font);
 		if (finalColor[0] > .5) return finalColor;
 		finalColor = draw_string(x, y, xPos, yPos, miscStrings[0], font);
@@ -450,8 +450,8 @@ float4 gameDraw(int x, int y, texture2D sprites, texture2D font)
 
 float4 gameOverDraw(int x, int y, texture2D sprites, texture2D font)
 {
-	int stringX = 38;
-	int stringY = 48;
+	int stringX = 5 * 8 - 4;
+	int stringY = 8 * 1;
 
 	// "Game Over"
 	float4 finalColor = draw_string(x, y, stringX, stringY, miscStrings[7], font);
@@ -460,8 +460,8 @@ float4 gameOverDraw(int x, int y, texture2D sprites, texture2D font)
 }
 float4 gameCompleteDraw(int x, int y, texture2D sprites, texture2D font)
 {
-	int stringX = 16;
-	int stringY = 48;
+	int stringX = 3 * 6;
+	int stringY = 8 * 1;
 
 	// ""Game Complete!"
 	float4 finalColor = draw_string(x, y, stringX, stringY, miscStrings[6], font);
@@ -471,7 +471,7 @@ float4 gameCompleteDraw(int x, int y, texture2D sprites, texture2D font)
 float4 gameEndDraw(int x, int y, texture2D sprites, texture2D font)
 {
 	int stringX = 6;
-	int stringY = 32;
+	int stringY = 8 * 3;
 
 	// "You cleared "
 	float4 finalColor = draw_string(x, y, stringX, stringY, miscStrings[1], font);
@@ -486,8 +486,8 @@ float4 gameEndDraw(int x, int y, texture2D sprites, texture2D font)
 	finalColor = draw_string(x, y, stringX, stringY, miscStrings[2], font);
 	if (finalColor[0] > .5) return finalColor;
 
-	stringX = 36;
-	stringY = 24;
+	stringX = 6 * 6;
+	stringY = 8 * 4;
 	// "In "
 	finalColor = draw_string(x, y, stringX, stringY, miscStrings[3], font);
 	if (finalColor[0] > .5) return finalColor;
@@ -496,15 +496,15 @@ float4 gameEndDraw(int x, int y, texture2D sprites, texture2D font)
 	finalColor = draw_time(x, y, stringX, stringY, gameTime, font);
 	if (finalColor[0] > .5) return finalColor;
 
-	stringX = 16;
-	stringY = 16;
+	stringX = 2 * 8;
+	stringY = 8 * 5;
 	// "With a score of"
 	finalColor = draw_string(x, y, stringX, stringY, miscStrings[4], font);
 	if (finalColor[0] > .5) return finalColor;
 
 	// Dynamic number: points.
-	stringX = 30;
-	stringY = 8;
+	stringX = 6 * 5;
+	stringY = 8 * 6;
 	finalColor = draw_integer(x, y, stringX, stringY, score, font);
 	if (finalColor[0] > .5) return finalColor;
 
