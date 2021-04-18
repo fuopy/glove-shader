@@ -105,6 +105,7 @@ public class s_camera : UdonSharpBehaviour
         if (pixels[soundArrayStart + soundShoot].r > 0.0)
         {
             var audioSource = ((AudioSource)sfxShoot.GetComponent(typeof(AudioSource)));
+            audioSource.Stop();
             audioSource.Play();
         }
 

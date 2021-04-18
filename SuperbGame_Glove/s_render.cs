@@ -12,10 +12,4 @@ public class s_render : UdonSharpBehaviour
         var station = ((VRCStation)GetComponent(typeof(VRCStation)));
         station.UseStation(Networking.LocalPlayer);
     }
-
-    public void playSoundEffect()
-    {
-        var audioSource = ((AudioSource)GetComponent(typeof(AudioSource)));
-        //audioSource.PlayOneShot()
-    }
 }
