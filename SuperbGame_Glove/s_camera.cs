@@ -26,7 +26,7 @@ public class s_camera : UdonSharpBehaviour
 
     int soundArrayStart = 0; // 256 * 80;
 
-    int soundAccept = 0;
+    int soundAccept = 20;
     int soundBack = 1;
     int soundCup = 2;
     int soundEnemyDefeat = 3;
@@ -35,7 +35,7 @@ public class s_camera : UdonSharpBehaviour
     int soundLemon = 6;
     int soundMove = 7;
     int soundPoo = 8;
-    int soundShoot = 9;
+    int soundShoot = 0;
     int soundSpawnerDefeat = 10;
     int soundSpawnerHit = 11;
 
@@ -46,19 +46,19 @@ public class s_camera : UdonSharpBehaviour
         Debug.Log(pixels[0]);
 
         // Accept
-        if (pixels[soundArrayStart + soundEnemyDefeat].r > 0.0)
+        if (pixels[soundArrayStart + soundAccept].r > 0.0)
         {
             var audioSource = ((AudioSource)sfxAccept.GetComponent(typeof(AudioSource)));
             audioSource.Play();
         }
         // Back
-        if (pixels[soundArrayStart + soundEnemyDefeat].r > 0.0)
+        if (pixels[soundArrayStart + soundBack].r > 0.0)
         {
             var audioSource = ((AudioSource)sfxBack.GetComponent(typeof(AudioSource)));
             audioSource.Play();
         }
         // Cup
-        if (pixels[soundArrayStart + soundEnemyDefeat].r > 0.0)
+        if (pixels[soundArrayStart + soundCup].r > 0.0)
         {
             var audioSource = ((AudioSource)sfxCup.GetComponent(typeof(AudioSource)));
             audioSource.Play();
@@ -70,48 +70,48 @@ public class s_camera : UdonSharpBehaviour
             audioSource.Play();
         }
         // Gold
-        if (pixels[soundArrayStart + soundEnemyDefeat].r > 0.0)
+        if (pixels[soundArrayStart + soundGold].r > 0.0)
         {
             var audioSource = ((AudioSource)sfxGold.GetComponent(typeof(AudioSource)));
             audioSource.Play();
         }
         // Key
-        if (pixels[soundArrayStart + soundEnemyDefeat].r > 0.0)
+        if (pixels[soundArrayStart + soundKey].r > 0.0)
         {
             var audioSource = ((AudioSource)sfxKey.GetComponent(typeof(AudioSource)));
             audioSource.Play();
         }
         // Lemon
-        if (pixels[soundArrayStart + soundEnemyDefeat].r > 0.0)
+        if (pixels[soundArrayStart + soundLemon].r > 0.0)
+        {
+            var audioSource = ((AudioSource)sfxLemon.GetComponent(typeof(AudioSource)));
+            audioSource.Play();
+        }
+        // Move
+        if (pixels[soundArrayStart + soundMove].r > 0.0)
         {
             var audioSource = ((AudioSource)sfxMove.GetComponent(typeof(AudioSource)));
             audioSource.Play();
         }
-        // Move
-        if (pixels[soundArrayStart + soundEnemyDefeat].r > 0.0)
-        {
-            var audioSource = ((AudioSource)sfxPoo.GetComponent(typeof(AudioSource)));
-            audioSource.Play();
-        }
 
         // Poo
-        if (pixels[soundArrayStart + soundEnemyDefeat].r > 0.0)
+        if (pixels[soundArrayStart + soundPoo].r > 0.0)
         {
-            var audioSource = ((AudioSource)sfxShoot.GetComponent(typeof(AudioSource)));
+            var audioSource = ((AudioSource)sfxPoo.GetComponent(typeof(AudioSource)));
             audioSource.Play();
         }
 
         // Shoot
         if (pixels[soundArrayStart + soundShoot].r > 0.0)
         {
-            var audioSource = ((AudioSource)sfxSpawnerDefeat.GetComponent(typeof(AudioSource)));
+            var audioSource = ((AudioSource)sfxShoot.GetComponent(typeof(AudioSource)));
             audioSource.Play();
         }
 
         // Spawner Defeat
         if (pixels[soundArrayStart + soundSpawnerDefeat].r > 0.0)
         {
-            var audioSource = ((AudioSource)sfxSpawnerHit.GetComponent(typeof(AudioSource)));
+            var audioSource = ((AudioSource)sfxSpawnerDefeat.GetComponent(typeof(AudioSource)));
             audioSource.Play();
         }
 

@@ -14,7 +14,7 @@ static const int keyboardReturnString[] = { // "1234567890QWERTYUIOPASDFGHJKL ZX
 #define WIDTH 8
 #define HEIGHT 8
 
-#define PLAY_SOUND 3
+#define PLAY_SOUND 2
 
 bool intersectSpriteSprite(int x1, int y1, int x2, int y2)
 {
@@ -586,7 +586,7 @@ void activate_key(inout Key obj)
     {
         walls[obj.target].active = false;
         obj.active = false;
-        // TODO: SFX
+		sound_Key = PLAY_SOUND;
     }
 }
 // SPAWNER //////////////////////////////////////////////////////////////////
@@ -650,22 +650,22 @@ void activate_treasure(inout Treasure obj)
     case TREASURE_GOLD: // Awards 10 points
         addScore(10);
 
-        // TODO: SFX
+		sound_Gold = PLAY_SOUND;
         break;
     case TREASURE_POO: // Kills all baddies on screen
         for (i = 0; i < numBadguys; ++i) {
             badguys[i].active = false;
         }
         flashScreen();
-        // TODO: SFX
+		sound_Poo = PLAY_SOUND;
         break;
     case TREASURE_CUP: // Awards 6 points
         addScore(6);
-        // TODO: SFX
+		sound_Cup = PLAY_SOUND;
         break;
     case TREASURE_LEMON: // Awards 300 health
         rollingHealth += 300;
-        // TODO: SFX
+		sound_Lemon = PLAY_SOUND;
         break;
     }
     obj.active = false;
@@ -713,6 +713,7 @@ void update_prompt(inout Prompt obj)
 			// Ideal Version:
 			// obj.inputBuffer[obj.inputBufferLength] = keyboardReturnString[obj.cursor];
 		}
+		sound_Accept = PLAY_SOUND;
 	}
 	else if (B_PRESSED)
 	{
@@ -728,6 +729,7 @@ void update_prompt(inout Prompt obj)
 				}
 			}
 		}
+		sound_Back = PLAY_SOUND;
 	}
     else if (UP_PRESSED)
 	{
@@ -736,6 +738,7 @@ void update_prompt(inout Prompt obj)
 			obj.cursor += obj.tabCount * obj.rows;
 		}
         obj.cursor -= obj.tabCount;
+		sound_Move = PLAY_SOUND;
     }
 	else if (DOWN_PRESSED)
 	{
@@ -744,6 +747,7 @@ void update_prompt(inout Prompt obj)
 		{
 			obj.cursor -= obj.tabCount * obj.rows;
 		}
+		sound_Move = PLAY_SOUND;
     }
 	else if (LEFT_PRESSED) {
 		if (obj.cursor % obj.tabCount == 0)
@@ -751,6 +755,7 @@ void update_prompt(inout Prompt obj)
 			obj.cursor += obj.tabCount;
 		}
 		obj.cursor--;
+		sound_Move = PLAY_SOUND;
     }
 	else if (RIGHT_PRESSED)
 	{
@@ -759,6 +764,7 @@ void update_prompt(inout Prompt obj)
 		{
 			obj.cursor -= obj.tabCount;
 		}
+		sound_Move = PLAY_SOUND;
     }
 }
 // world ////////////////////////////////////////////////////////////////////
@@ -1040,6 +1046,7 @@ void hiscoreViewUpdate()
     // TODO: Allow input.
     if (A_PRESSED)
     {
+		sound_Move = PLAY_SOUND;
         gameState = GAMESTATE_GAME_TITLE;
     }
 }
