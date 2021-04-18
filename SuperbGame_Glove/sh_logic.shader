@@ -28,6 +28,19 @@
                 // Load state from texture.
                 load_state(_LogicCanvas);
 
+				sound_Accept--;        if (sound_Accept <= 0) sound_Accept = 0;
+				sound_Back--;          if (sound_Back <= 0) sound_Back = 0;
+				sound_Cup--;           if (sound_Cup <= 0) sound_Cup = 0;
+				sound_EnemyDefeat--;   if (sound_EnemyDefeat <= 0) sound_EnemyDefeat = 0;
+				sound_Gold--;          if (sound_Gold <= 0) sound_Gold = 0;
+				sound_Key--;           if (sound_Key <= 0) sound_Key = 0;
+				sound_Lemon--;         if (sound_Lemon <= 0) sound_Lemon = 0;
+				sound_Move--;          if (sound_Move <= 0) sound_Move = 0;
+				sound_Poo--;           if (sound_Poo <= 0) sound_Poo = 0;
+				sound_Shoot--;         if (sound_Shoot <= 0) sound_Shoot = 0;
+				sound_SpawnerDefeat--; if (sound_SpawnerDefeat <= 0) sound_SpawnerDefeat = 0;
+				sound_SpawnerHit--;    if (sound_SpawnerHit <= 0) sound_SpawnerHit = 0;
+
                 // Do a different thing depending on the game state.
                 updateInput(_PlayerOneJoystick);
 
@@ -110,6 +123,7 @@
                     hiscoreViewUpdate();
                     break;
                 }
+
                 return save_state(x, y);
             }
             ENDCG

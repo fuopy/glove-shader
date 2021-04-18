@@ -213,13 +213,28 @@ NEW_MEMORY_ARRAY(arr_wall_whs, 2)    // Length numWalls (16)
 #define SINGLE_RECORDS_DISCOVERED 87
 #define SINGLE_RECORDS_VALID 88
 
+#define SINGLESOUND_ACCEPT 0
+#define SINGLESOUND_BACK 1
+#define SINGLESOUND_CUP 2
+#define SINGLESOUND_ENEMYDEFEAT 3
+#define SINGLESOUND_GOLD 4
+#define SINGLESOUND_KEY 5
+#define SINGLESOUND_LEMON 6
+#define SINGLESOUND_MOVE 7
+#define SINGLESOUND_POO 8
+#define SINGLESOUND_SHOOT 9
+#define SINGLESOUND_SPAWNERDEFEAT 10
+#define SINGLESOUND_SPAWNERHIT 11
+
 // ROWS ////////////////////////////////////////////////////////////////////
 #define ROW_SINGLE_VARS 0
+#define ROW_SOUND_VARS 80
 #define ROW_WALL_XYA 1
 #define ROW_WALL_WHS 2
 #define ROW_BADGUY_XY 3
 
 #define ROW_SINGLE 0
+#define ROW_SOUND 80
 
 #define ROW_BADGUY_X 1
 #define ROW_BADGUY_Y 2
@@ -361,18 +376,18 @@ static Exit exits[4];
 static Prompt prompt;
 static Records records;
 
-static int spawnx; //short               // SINGLE_SPAWNX
-static int spawny; //short               // SINGLE_SPAWNY
+static int spawnx; //short            // SINGLE_SPAWNX
+static int spawny; //short            // SINGLE_SPAWNY
 static int autoFireTime; //char       // SINGLE_AUTOFIRETIME
-static int whiteScreenTime; //char       // SINGLE_WHITESCREENTIME
+static int whiteScreenTime; //char    // SINGLE_WHITESCREENTIME
 static uint score; //ushort           // SINGLE_SCORE
-static int rollingScore; //short       // SINGLE_ROLLINGSCORE
+static int rollingScore; //short      // SINGLE_ROLLINGSCORE
 static uint rollingHealth; //ushort   // SINGLE_ROLLINGHEALTH
-static uint currentLevel; //uchar       // SINGLE_CURRENTLEVEL
+static uint currentLevel; //uchar     // SINGLE_CURRENTLEVEL
 static uint levelsCompleted; //uchar  // SINGLE_LEVELSCOMPLETED
-static uint gameTime; //ushort           // SINGLE_GAMETIME
-static int gameTimeTick; //short       // SINGLE_GAMETIMETICK
-static uint quitGame; //bool           // SINGLE_QUITGAME
+static uint gameTime; //ushort        // SINGLE_GAMETIME
+static int gameTimeTick; //short      // SINGLE_GAMETIMETICK
+static uint quitGame; //bool          // SINGLE_QUITGAME
 static int scrollx; //short           // SINGLE_SCROLLX
 static int scrolly; //short           // SINGLE_SCROLLY
 static int BadGuy_UpdateDelay; //char // SINGLE_BADGUY_UPDATEDELAY
@@ -388,17 +403,29 @@ static int logicClockTick; // SINGLE_LOGIC_CLOCKTICK
 
 static bool new_a;        // SINGLE_NEW_A
 static bool new_b;        // SINGLE_NEW_B
-static bool new_up;    // SINGLE_NEW_UP
-static bool new_left;  // SINGLE_NEW_LEFT
-static bool new_down;  // SINGLE_NEW_DOWN
-static bool new_right; // SINGLE_NEW_RIGHT
+static bool new_up;       // SINGLE_NEW_UP
+static bool new_left;     // SINGLE_NEW_LEFT
+static bool new_down;     // SINGLE_NEW_DOWN
+static bool new_right;    // SINGLE_NEW_RIGHT
 static bool old_a;        // SINGLE_OLD_A
 static bool old_b;        // SINGLE_OLD_B
-static bool old_up;    // SINGLE_OLD_UP
-static bool old_down;  // SINGLE_OLD_DOWN
-static bool old_left;  // SINGLE_OLD_LEFT
-static bool old_right; // SINGLE_OLD_RIGHT
+static bool old_up;       // SINGLE_OLD_UP
+static bool old_down;     // SINGLE_OLD_DOWN
+static bool old_left;     // SINGLE_OLD_LEFT
+static bool old_right;    // SINGLE_OLD_RIGHT
 
+static int sound_Accept;         // SINGLESOUND_ACCEPT
+static int sound_Back;           // SINGLESOUND_BACK
+static int sound_Cup;            // SINGLESOUND_CUP
+static int sound_EnemyDefeat;    // SINGLESOUND_ENEMYDEFEAT
+static int sound_Gold;           // SINGLESOUND_GOLD
+static int sound_Key;            // SINGLESOUND_KEY
+static int sound_Lemon;          // SINGLESOUND_LEMON
+static int sound_Move;           // SINGLESOUND_MOVE
+static int sound_Poo;            // SINGLESOUND_POO
+static int sound_Shoot;          // SINGLESOUND_SHOOT
+static int sound_SpawnerDefeat;  // SINGLESOUND_SPAWNERDEFEAT
+static int sound_SpawnerHit;     // SINGLESOUND_SPAWNERHIT
 
 void updateInput(int inputState)
 {
@@ -415,13 +442,6 @@ void updateInput(int inputState)
     new_right = inputState & 8;
     new_up = inputState & 16;
     new_down = inputState & 32;
-
-    //new_a = (joystick[3] > 0);
-    //new_b = (joystick[2] > 0);
-    //new_up = (joystick[1] > 0);
-    //new_down = (joystick[1] < 0);
-    //new_left = (joystick[0] < 0);
-    //new_right = (joystick[0] > 0);
 }
 void tautInput()
 {
@@ -441,43 +461,26 @@ static const unsigned int scrh = 64;
 float4 pack_it(uint val)
 {
     // Dumb bitwise placement.
-    //return float4(asfloat((val & 0xff)), asfloat((val & 0xff00)>>8), asfloat((val & 0xff0000)>>16), asfloat((val & 0xff000000)>>24));
-
     return float4(PACK(val), PACK(HI(val)), PACK(SLO(val)), PACK(SHI(val)));
 }
 float4 pack_it(int val)
 {
-    //return float4(asfloat((val & 0xff)), asfloat((val & 0xff00) >> 8), asfloat((val & 0xff0000) >> 16), asfloat((val & 0xff000000) >> 24));
     uint us = asuint(val);
     float4 result = {(us&0xff) / 255.0, ((us>>8)&0xff) / 255.0, ((us>>16)&0xff) / 255.0, ((us>>24)&0xff) / 255.0};
     return result;
-    //return float4(PACK(val), PACK(HI(val)), PACK(SLO(val)), PACK(SHI(val)));
 }
 int unpack_int(float4 val)
 {
-    //return asint(val[0]) | (asint(val[1]) << 8) | (asint(val[2]) << 16) | (asint(val[3]) << 24);
     uint a = (val[0]*255);
     uint b = ((uint)(val[1]*255)) << 8;
     uint c = ((uint)(val[2]*255)) << 16;
     uint d = ((uint)(val[3]*255)) << 24;
     uint e = (a | b | c | d);
     int f = asint(e);
-    //
-    ////return asint(a);
-    //
     return f;
-    
-    
-    
-    //uint a = UNPACK(val[0]);
-    //uint b = ((uint)UNPACK(val[1]) << 8);
-    //uint c = ((uint)UNPACK(val[2]) << 16);
-    //uint d = ((uint)UNPACK(val[3]) << 24);
-    //return asint(a | b | c | d);
 }
 uint unpack_uint(float4 val)
 {
-    //return asuint(val[0]) | (asuint(val[1]) << 8) | (asuint(val[2]) << 16) | (asuint(val[3]) << 24);
     uint a = UNPACK(val[0]);
     uint b = ((uint)UNPACK(val[1]) << 8);
     uint c = ((uint)UNPACK(val[2]) << 16);
@@ -487,7 +490,6 @@ uint unpack_uint(float4 val)
 void load_state(texture2D tex)
 {
     // Load all memory values.
-    //load_explorer_state(tex);
     int i;
 	int j;
 
@@ -557,6 +559,21 @@ void load_state(texture2D tex)
     old_left = (unpack_int(tex[int2(SINGLE_OLD_DOWN, ROW_SINGLE)]) > 0 ? true : false);
     old_down = (unpack_int(tex[int2(SINGLE_OLD_LEFT, ROW_SINGLE)]) > 0 ? true : false);
     old_right = (unpack_int(tex[int2(SINGLE_OLD_RIGHT, ROW_SINGLE)]) > 0 ? true : false);
+
+	sound_EnemyDefeat = (unpack_int(tex[int2(SINGLESOUND_ENEMYDEFEAT, ROW_SOUND)]));
+	sound_Shoot = (unpack_int(tex[int2(SINGLESOUND_SHOOT, ROW_SOUND)]));
+	sound_SpawnerDefeat = (unpack_int(tex[int2(SINGLESOUND_SPAWNERDEFEAT, ROW_SOUND)]));
+	sound_SpawnerHit = (unpack_int(tex[int2(SINGLESOUND_SPAWNERHIT, ROW_SOUND)]));
+
+	sound_Key = (unpack_int(tex[int2(SINGLESOUND_KEY, ROW_SOUND)]));
+	sound_Gold = (unpack_int(tex[int2(SINGLESOUND_GOLD, ROW_SOUND)]));
+	sound_Poo = (unpack_int(tex[int2(SINGLESOUND_POO, ROW_SOUND)]));
+	sound_Cup = (unpack_int(tex[int2(SINGLESOUND_CUP, ROW_SOUND)]));
+	sound_Lemon = (unpack_int(tex[int2(SINGLESOUND_LEMON, ROW_SOUND)]));
+	sound_Accept = (unpack_int(tex[int2(SINGLESOUND_ACCEPT, ROW_SOUND)]));
+	sound_Back = (unpack_int(tex[int2(SINGLESOUND_BACK, ROW_SOUND)]));
+	sound_Move = (unpack_int(tex[int2(SINGLESOUND_MOVE, ROW_SOUND)]));
+
 
     for (i = 0; i < numBadguys; ++i)
     {
@@ -809,6 +826,54 @@ float4 save_RecordsValid()
 {
 	return pack_it(records.valid);
 }
+float4 save_SoundEnemyDefeat()
+{
+	return pack_it(sound_EnemyDefeat);
+}
+float4 save_SoundShoot()
+{
+	return pack_it(sound_Shoot);
+}
+float4 save_SoundSpawnerDefeat()
+{
+	return pack_it(sound_SpawnerDefeat);
+}
+float4 save_SoundSpawnerHit()
+{
+	return pack_it(sound_SpawnerHit);
+}
+float4 save_SoundKey()
+{
+	return pack_it(sound_Key);
+}
+float4 save_SoundGold()
+{
+	return pack_it(sound_Gold);
+}
+float4 save_SoundPoo()
+{
+	return pack_it(sound_Poo);
+}
+float4 save_SoundCup()
+{
+	return pack_it(sound_Cup);
+}
+float4 save_SoundLemon()
+{
+	return pack_it(sound_Lemon);
+}
+float4 save_SoundAccept()
+{
+	return pack_it(sound_Accept);
+}
+float4 save_SoundBack()
+{
+	return pack_it(sound_Back);
+}
+float4 save_SoundMove()
+{
+	return pack_it(sound_Move);
+}
 
 float4 save_Single(int x)
 {
@@ -872,6 +937,25 @@ float4 save_Single(int x)
 	case SINGLE_RECORDS_VALID: return save_RecordsValid();
     }
     return nullFloat4;
+}
+float4 save_SingleSound(int x)
+{
+	switch (x)
+	{
+		case SINGLESOUND_ENEMYDEFEAT: return save_SoundEnemyDefeat();
+		case SINGLESOUND_SHOOT: return save_SoundShoot();
+		case SINGLESOUND_SPAWNERDEFEAT: return save_SoundSpawnerDefeat();
+		case SINGLESOUND_SPAWNERHIT: return save_SoundSpawnerHit();
+		case SINGLESOUND_KEY: return save_SoundKey();
+		case SINGLESOUND_GOLD: return save_SoundGold();
+		case SINGLESOUND_POO: return save_SoundPoo();
+		case SINGLESOUND_CUP: return save_SoundCup();
+		case SINGLESOUND_LEMON: return save_SoundLemon();
+		case SINGLESOUND_ACCEPT: return save_SoundAccept();
+		case SINGLESOUND_BACK: return save_SoundBack();
+		case SINGLESOUND_MOVE: return save_SoundMove();
+	}
+	return nullFloat4;
 }
 float4 save_BadguyX(int id)
 {
@@ -1074,6 +1158,7 @@ float4 save_state(int x, int y)
     switch (y)
     {
     case ROW_SINGLE: return save_Single(x);
+	case ROW_SOUND: return save_SingleSound(x);
     case ROW_BADGUY_X: return save_BadguyX(x);
     case ROW_BADGUY_Y: return save_BadguyY(x);
     case ROW_BADGUY_ACTIVE: return save_BadguyActive(x);

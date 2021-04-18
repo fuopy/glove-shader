@@ -14,6 +14,8 @@ static const int keyboardReturnString[] = { // "1234567890QWERTYUIOPASDFGHJKL ZX
 #define WIDTH 8
 #define HEIGHT 8
 
+#define PLAY_SOUND 3
+
 bool intersectSpriteSprite(int x1, int y1, int x2, int y2)
 {
     return ((x1 < x2+WIDTH) &&
@@ -223,7 +225,7 @@ void update_badguy(inout BadGuy obj, int id)
 void destroy_badguy(inout BadGuy obj)
 {
     if (obj.active) {
-        // TODO: Sound Effect.
+		sound_EnemyDefeat = PLAY_SOUND;
         obj.active = false;
     }
 }
@@ -232,7 +234,7 @@ void add_bullet(int x, int y, int vx, int vy)
 {
     for (int i = 0; i < numBullets; ++i) {
         if (!bullets[i].active) {
-            // TODO: Play sound effect.
+			sound_Shoot = PLAY_SOUND;
             bullets[i].active = true;
             bullets[i].x = x;
             bullets[i].y = y;
@@ -621,10 +623,10 @@ void damage_spawner(inout Spawner obj, int dmg)
     {
         obj.active = false;
         addScore(1);
-        // TODO: SFX
+		sound_SpawnerDefeat = PLAY_SOUND;
     }
     else {
-        ; // TODO: SFX
+		sound_SpawnerHit = PLAY_SOUND;
     }
 }
 // TREASURE /////////////////////////////////////////////////////////////////
@@ -647,6 +649,7 @@ void activate_treasure(inout Treasure obj)
     switch (obj.type) {
     case TREASURE_GOLD: // Awards 10 points
         addScore(10);
+
         // TODO: SFX
         break;
     case TREASURE_POO: // Kills all baddies on screen

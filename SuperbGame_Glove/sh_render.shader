@@ -44,8 +44,6 @@
                 // Update with the color Blue.
                 float4 finalColor = { 0, 0, 0, 0 };
 
-				_TestNumber = levelsCompleted;
-
                 // Draw the debugging number on top of everything.
                 if (_TestNumber > 0)
                 {

@@ -409,9 +409,14 @@ float4 titleDraw(int x, int y, texture2D sprites, texture2D font, texture2D titl
 			PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[25], font));
 		}
 	}
+	else if (GameMode == GAME_MODE_RANDOM)
+	{
+		int stringX = 16;
+		int stringY = scrh - 8;
+		PIXEL(finalColor, draw_string(x, y, stringX, stringY, miscStrings[25], font));
+	}
 
     return finalColor;
-    //PIXEL(draw_integer(x, y, 0, 0, exits[0].active ? 1 : 2, font));
 }
 
 float4 levelNameDraw(int x, int y, texture2D sprites, texture2D font)
